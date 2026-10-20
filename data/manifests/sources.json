@@ -1,0 +1,99 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-10-20T00:00:00Z",
+  "notes": [
+    "Stage 0 audit manifest. See docs/SOURCES.md for the full audit.",
+    "robots_checked_at is null for every entry: the audit is UNVERIFIED until a",
+    "human re-checks the live robots.txt / ToS. The ingestor refuses unverified",
+    "sources unless allow_unverified=True is passed explicitly.",
+    "Conservative policy: internal storage of text for processing is assumed OK",
+    "in principle; redistribution of article text is NOT permitted except where a",
+    "source is explicitly public-domain/official AND verified."
+  ],
+  "sources": [
+    {
+      "source_id": "businessday",
+      "name": "BusinessDay",
+      "base_url": "https://businessday.ng",
+      "url_pattern": "^https?://(www\\.)?businessday\\.ng/(articles|\\d{4}/\\d{2})/",
+      "access_method": "rss",
+      "license_note": "UNVERIFIED. Commercial news publisher; all rights reserved until the live robots.txt and ToS are checked. Internal storage of text for processing only. We publish article URLs and derived labels, never the article text.",
+      "trust_tier": "tier1",
+      "robots_checked_at": null,
+      "enabled": true,
+      "notes": "Stage 0 audit NOT yet verified against live robots.txt. Preferred route: official RSS feed. See docs/SOURCES.md."
+    },
+    {
+      "source_id": "nairametrics",
+      "name": "Nairametrics",
+      "base_url": "https://nairametrics.com",
+      "url_pattern": "^https?://(www\\.)?nairametrics\\.com/\\d{4}/\\d{2}/",
+      "access_method": "rss",
+      "license_note": "UNVERIFIED. Commercial finance publisher; all rights reserved until the live robots.txt and ToS are checked. Internal storage of text for processing only. We publish article URLs and derived labels, never the article text.",
+      "trust_tier": "tier1",
+      "robots_checked_at": null,
+      "enabled": true,
+      "notes": "Stage 0 audit NOT yet verified. High-value CBN/NGX coverage. Preferred route: official RSS feed."
+    },
+    {
+      "source_id": "punch",
+      "name": "Punch",
+      "base_url": "https://punchng.com",
+      "url_pattern": "^https?://(www\\.)?punchng\\.com/[a-z0-9-]+/",
+      "access_method": "rss",
+      "license_note": "UNVERIFIED. Commercial newspaper; all rights reserved until the live robots.txt and ToS are checked. Internal storage of text for processing only. We publish article URLs and derived labels, never the article text.",
+      "trust_tier": "tier1",
+      "robots_checked_at": null,
+      "enabled": true,
+      "notes": "Stage 0 audit NOT yet verified. Business desk feed preferred. May carry agency-syndicated copy; dedup handles that."
+    },
+    {
+      "source_id": "premium_times",
+      "name": "Premium Times",
+      "base_url": "https://www.premiumtimesng.com",
+      "url_pattern": "^https?://(www\\.)?premiumtimesng\\.com/(business|news)/",
+      "access_method": "rss",
+      "license_note": "UNVERIFIED. Commercial publisher; all rights reserved until the live robots.txt and ToS are checked. Internal storage of text for processing only. We publish article URLs and derived labels, never the article text.",
+      "trust_tier": "tier1",
+      "robots_checked_at": null,
+      "enabled": true,
+      "notes": "Stage 0 audit NOT yet verified. Policy/investigations coverage. Preferred route: official RSS feed."
+    },
+    {
+      "source_id": "cbn",
+      "name": "Central Bank of Nigeria",
+      "base_url": "https://www.cbn.gov.ng",
+      "url_pattern": "^https?://(www\\.)?cbn\\.gov\\.ng/(Out|Press|Publications|\\d{4})",
+      "access_method": "html",
+      "license_note": "UNVERIFIED. Regulator-published material, likely public use but the site's stated terms must be confirmed before any text redistribution. Internal storage of text for processing confirmed as the conservative default. We publish article URLs, is_official_release, and derived labels; we redistribute text only if the terms allow.",
+      "trust_tier": "official",
+      "robots_checked_at": null,
+      "enabled": true,
+      "notes": "Stage 0 audit NOT yet verified. Primary source for cbn_policy (MPR, FX windows, circulars, MPC communiqués). Prefer a stable press-release index path."
+    },
+    {
+      "source_id": "ngx",
+      "name": "Nigerian Exchange Group",
+      "base_url": "https://ngxgroup.com",
+      "url_pattern": "^https?://(www\\.)?ngxgroup\\.com/(exchange|issuers|news|market-data)",
+      "access_method": "html",
+      "license_note": "UNVERIFIED. Exchange-published notices are public, but some content is issuer-authored and may carry separate rights; confirm terms and any redistribution limits. Internal storage of text for processing confirmed as the conservative default. We publish article URLs, is_official_release, and derived labels; we redistribute text only if the terms allow.",
+      "trust_tier": "official",
+      "robots_checked_at": null,
+      "enabled": true,
+      "notes": "Stage 0 audit NOT yet verified. Source for earnings/dividend/mna/capital_raise disclosures. Some disclosures may require a separate portal path."
+    },
+    {
+      "source_id": "sec_ng",
+      "name": "SEC Nigeria",
+      "base_url": "https://sec.gov.ng",
+      "url_pattern": "^https?://(www\\.)?sec\\.gov\\.ng/(rules|circulars|enforcement|news|capital-market)",
+      "access_method": "html",
+      "license_note": "UNVERIFIED. Regulator-published material, likely public use but the site's stated terms must be confirmed before any text redistribution. Internal storage of text for processing confirmed as the conservative default. We publish article URLs, is_official_release, and derived labels; we redistribute text only if the terms allow.",
+      "trust_tier": "official",
+      "robots_checked_at": null,
+      "enabled": true,
+      "notes": "Stage 0 audit NOT yet verified. Source for regulatory_sanction and capital-market rules."
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+*.onnx
+
+# Env / secrets
+.env
+.env.local
+*.pem
+
+# Data (never commit raw article text or trained weights)
+data/corpus/
+data/raw/
+data/processed/
+data/models/
+*.pt
+*.bin
+*.safetensors
+*.joblib
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Node
+node_modules/
+apps/web/dist/
+.vite/
+
+# Logs / OS
+*.log
+.DS_Store
+Thumbs.db
+
+# W&B / local runs
+wandb/
+runs/
