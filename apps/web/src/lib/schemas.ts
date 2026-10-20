@@ -689,21 +689,14 @@ export function toEventTypes(values: readonly unknown[] | null | undefined): Eve
   return values.filter(isEventType);
 }
 
-/** Label that must appear wherever aggregate numbers are shown. */
-export const COVERAGE_MEASUREMENT_LABEL = "news coverage measurements";
-
-/** The one canonical disclaimer string. Do not paraphrase it. */
-export const DISCLAIMER_TEXT =
-  "Not investment advice. These are measurements of language in published news coverage, not investor sentiment, and no causal or predictive claim is made.";
-
-/** Canonical note about evidence spans. */
-export const EVIDENCE_SPAN_NOTE =
-  "Evidence spans are supporting text, not causal attribution.";
-
-/** Canonical note about dedup being model-inferred. */
-export const DEDUP_NOTE =
-  "Deduplication and clustering are model-inferred. Two articles judged the same story may not be, and vice versa.";
-
-/** Canonical abstention string from the copilot. */
-export const ABSTENTION_TEXT =
-  "I don't have enough evidence in the indexed coverage to answer that.";
+/**
+ * Product wording lives in ./constants.ts. Re-exported here for convenience so
+ * existing imports from "@/lib/schemas" keep working.
+ */
+export {
+  ABSTENTION_TEXT,
+  COVERAGE_MEASUREMENT_LABEL,
+  DEDUP_INFERRED_NOTE as DEDUP_NOTE,
+  DISCLAIMER_TEXT,
+  EVIDENCE_SPAN_NOTE,
+} from "./constants";

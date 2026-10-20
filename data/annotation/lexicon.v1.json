@@ -1,0 +1,703 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-10-20T00:00:00Z",
+  "notes": "Nigerian financial terminology lexicon. reviewed = a second person confirmed the canonical form and type. pending = shipped but unconfirmed (notably tickers); see docs/ANNOTATION_GUIDE.md \u00a75.5. Ticker entries cross-checked against the NGX equities list (ngxgroup.com) as of 2026-10.",
+  "terms": [
+    {
+      "term": "CBN",
+      "type": "REGULATOR",
+      "canonical": "Central Bank of Nigeria",
+      "aliases": ["Central Bank of Nigeria", "the apex bank", "apex bank", "the CBN"],
+      "review_status": "reviewed",
+      "notes": "Monetary authority; regulator, never typed ORG."
+    },
+    {
+      "term": "SEC",
+      "type": "REGULATOR",
+      "canonical": "Securities and Exchange Commission",
+      "aliases": ["Securities and Exchange Commission", "SEC Nigeria"],
+      "review_status": "reviewed",
+      "notes": "Capital-markets regulator. Sub-Saharan 'SEC Nigeria' disambiguates from the US SEC."
+    },
+    {
+      "term": "NDIC",
+      "type": "REGULATOR",
+      "canonical": "Nigeria Deposit Insurance Corporation",
+      "aliases": ["Nigeria Deposit Insurance Corporation", "NDIC Nigeria"],
+      "review_status": "reviewed",
+      "notes": "Deposit insurer for banks."
+    },
+    {
+      "term": "NERC",
+      "type": "REGULATOR",
+      "canonical": "Nigerian Electricity Regulatory Commission",
+      "aliases": ["Nigerian Electricity Regulatory Commission"],
+      "review_status": "reviewed",
+      "notes": "Power-sector regulator."
+    },
+    {
+      "term": "FCCPC",
+      "type": "REGULATOR",
+      "canonical": "Federal Competition and Consumer Protection Commission",
+      "aliases": ["Federal Competition and Consumer Protection Commission", "FCCPC Nigeria"],
+      "review_status": "reviewed",
+      "notes": "Competition and consumer-protection regulator."
+    },
+    {
+      "term": "PENCOM",
+      "type": "REGULATOR",
+      "canonical": "National Pension Commission",
+      "aliases": ["National Pension Commission", "PenCom"],
+      "review_status": "reviewed",
+      "notes": "Pension-industry regulator."
+    },
+    {
+      "term": "NAICOM",
+      "type": "REGULATOR",
+      "canonical": "National Insurance Commission",
+      "aliases": ["National Insurance Commission"],
+      "review_status": "reviewed",
+      "notes": "Insurance-sector regulator."
+    },
+    {
+      "term": "FMDQ",
+      "type": "ORG",
+      "canonical": "FMDQ Securities Exchange",
+      "aliases": ["FMDQ Securities Exchange", "FMDQ OTC", "FMDQ Group"],
+      "review_status": "pending",
+      "notes": "OTC securities exchange. Type kept ORG rather than REGULATOR \u2014 it operates a market, it does not regulate it."
+    },
+    {
+      "term": "NGX",
+      "type": "REGULATOR",
+      "canonical": "Nigerian Exchange Limited",
+      "aliases": ["Nigerian Exchange", "Nigerian Exchange Limited", "Nigeria Stock Exchange", "NSE"],
+      "review_status": "reviewed",
+      "notes": "Self-regulatory operator of the exchange; typed REGULATOR per the policy that market operators with rule-making powers are REGULATOR."
+    },
+    {
+      "term": "NGXGROUP",
+      "type": "TICKER",
+      "canonical": "Nigerian Exchange Group Plc",
+      "aliases": ["Nigerian Exchange Group"],
+      "review_status": "reviewed",
+      "notes": "The listed holding company ticker; distinct from the exchange operator NGX."
+    },
+    {
+      "term": "MPR",
+      "type": "ACRONYM",
+      "canonical": "Monetary Policy Rate",
+      "aliases": ["Monetary Policy Rate", "policy rate"],
+      "review_status": "reviewed",
+      "notes": "CBN benchmark rate."
+    },
+    {
+      "term": "MPC",
+      "type": "ACRONYM",
+      "canonical": "Monetary Policy Committee",
+      "aliases": ["Monetary Policy Committee"],
+      "review_status": "reviewed",
+      "notes": "CBN committee that sets the MPR."
+    },
+    {
+      "term": "OMO",
+      "type": "ACRONYM",
+      "canonical": "Open Market Operations",
+      "aliases": ["Open Market Operations", "OMO auctions"],
+      "review_status": "reviewed",
+      "notes": "CBN liquidity-management instrument."
+    },
+    {
+      "term": "T-bills",
+      "type": "ACRONYM",
+      "canonical": "Treasury bills",
+      "aliases": ["Treasury bills", "treasury bills", "NTBs", "TBs"],
+      "review_status": "reviewed",
+      "notes": "Short-term sovereign debt."
+    },
+    {
+      "term": "FGN bonds",
+      "type": "ACRONYM",
+      "canonical": "Federal Government of Nigeria bonds",
+      "aliases": ["FGN bond", "Federal Government bonds"],
+      "review_status": "reviewed",
+      "notes": "Long-dated sovereign debt."
+    },
+    {
+      "term": "FX",
+      "type": "ACRONYM",
+      "canonical": "Foreign Exchange",
+      "aliases": ["forex", "foreign exchange", "foreign-exchange"],
+      "review_status": "reviewed",
+      "notes": "Generic FX term."
+    },
+    {
+      "term": "I&E window",
+      "type": "ACRONYM",
+      "canonical": "Investors and Exporters FX Window",
+      "aliases": ["Investors and Exporters window", "NAFEX", "I and E window"],
+      "review_status": "reviewed",
+      "notes": "The official FX window for investors and exporters."
+    },
+    {
+      "term": "parallel market",
+      "type": "ACRONYM",
+      "canonical": "parallel (black) FX market",
+      "aliases": ["black market", "parallel FX market", "street market"],
+      "review_status": "reviewed",
+      "notes": "Unofficial FX market. Not itself a regulation term."
+    },
+    {
+      "term": "naira",
+      "type": "CURRENCY",
+      "canonical": "NGN",
+      "aliases": ["\u20a6", "N", "NGN", "naira"],
+      "review_status": "reviewed",
+      "notes": "Nigerian naira. Bare 'N' before a number in a financial article is naira."
+    },
+    {
+      "term": "kobo",
+      "type": "CURRENCY",
+      "canonical": "NGN (1/100)",
+      "aliases": ["kobos"],
+      "review_status": "reviewed",
+      "notes": "Sub-unit of the naira; unit='kobo', value/100 naira."
+    },
+    {
+      "term": "dollar",
+      "type": "CURRENCY",
+      "canonical": "USD",
+      "aliases": ["USD", "$", "US dollar", "buck"],
+      "review_status": "reviewed",
+      "notes": "US dollar."
+    },
+    {
+      "term": "pound sterling",
+      "type": "CURRENCY",
+      "canonical": "GBP",
+      "aliases": ["GBP", "\u00a3", "pound"],
+      "review_status": "reviewed",
+      "notes": "Pound sterling."
+    },
+    {
+      "term": "euro",
+      "type": "CURRENCY",
+      "canonical": "EUR",
+      "aliases": ["EUR", "\u20ac"],
+      "review_status": "reviewed",
+      "notes": "Euro."
+    },
+    {
+      "term": "bps",
+      "type": "ACRONYM",
+      "canonical": "basis points",
+      "aliases": ["basis points", "bp", "basis point"],
+      "review_status": "reviewed",
+      "notes": "Not a MONEY span; a rate-move unit."
+    },
+    {
+      "term": "mbpd",
+      "type": "ACRONYM",
+      "canonical": "million barrels per day",
+      "aliases": ["mb/d", "million barrels per day"],
+      "review_status": "reviewed",
+      "notes": "Oil-output unit."
+    },
+    {
+      "term": "DANGCEM",
+      "type": "TICKER",
+      "canonical": "Dangote Cement Plc",
+      "aliases": ["Dangote Cement"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "MTNN",
+      "type": "TICKER",
+      "canonical": "MTN Nigeria Communications Plc",
+      "aliases": ["MTN Nigeria", "MTN"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "GTCO",
+      "type": "TICKER",
+      "canonical": "Guaranty Trust Holding Company Plc",
+      "aliases": ["Guaranty Trust", "GTBank", "GTCO Plc"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list. Holding company ticker; the bank itself is GTBank."
+    },
+    {
+      "term": "ZENITHBANK",
+      "type": "TICKER",
+      "canonical": "Zenith Bank Plc",
+      "aliases": ["Zenith Bank", "Zenith"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "AIRTELAFRI",
+      "type": "TICKER",
+      "canonical": "Airtel Africa Plc",
+      "aliases": ["Airtel Africa", "Airtel"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "BUACEMENT",
+      "type": "TICKER",
+      "canonical": "BUA Cement Plc",
+      "aliases": ["BUA Cement"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "BUAFOODS",
+      "type": "TICKER",
+      "canonical": "BUA Foods Plc",
+      "aliases": ["BUA Foods"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "NB",
+      "type": "TICKER",
+      "canonical": "Nigerian Breweries Plc",
+      "aliases": ["Nigerian Breweries"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list. Ambiguous with 'nota bene' \u2014 TICKER only in market context."
+    },
+    {
+      "term": "UBA",
+      "type": "TICKER",
+      "canonical": "United Bank for Africa Plc",
+      "aliases": ["United Bank for Africa", "UBA Plc"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list (NOT 'UBACEMPTY')."
+    },
+    {
+      "term": "FIRSTHOLDCO",
+      "type": "TICKER",
+      "canonical": "First HoldCo Plc",
+      "aliases": ["First Bank", "First Bank of Nigeria", "FBN Holdings", "FirstHoldCo"],
+      "review_status": "pending",
+      "notes": "First Bank/FBN Holdings restructured to 'First HoldCo Plc'; legacy ticker FBNH retired. Alias FBNH kept but ships pending pending re-confirmation of historical usage."
+    },
+    {
+      "term": "FBNH",
+      "type": "TICKER",
+      "canonical": "FBN Holdings Plc (legacy)",
+      "aliases": ["FBN Holdings"],
+      "review_status": "pending",
+      "notes": "LEGACY ticker, superseded by FIRSTHOLDCO. Do not use for post-2025 text without confirmation."
+    },
+    {
+      "term": "ACCESSCORP",
+      "type": "TICKER",
+      "canonical": "Access Holdings Plc",
+      "aliases": ["Access Holdings", "Access Bank", "Access Corporation"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list. Access Bank is the bank subsidiary."
+    },
+    {
+      "term": "FIDELITYBK",
+      "type": "TICKER",
+      "canonical": "Fidelity Bank Plc",
+      "aliases": ["Fidelity Bank"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "WEMABANK",
+      "type": "TICKER",
+      "canonical": "Wema Bank Plc",
+      "aliases": ["Wema Bank", "Wema"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "FCMB",
+      "type": "TICKER",
+      "canonical": "FCMB Group Plc",
+      "aliases": ["First City Monument Bank", "FCMB Group"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "STANBIC",
+      "type": "TICKER",
+      "canonical": "Stanbic IBTC Holdings Plc",
+      "aliases": ["Stanbic IBTC", "Stanbic IBTC Holdings"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "UBAF",
+      "type": "TICKER",
+      "canonical": "UBA (legacy alias)",
+      "aliases": ["UBA"],
+      "review_status": "pending",
+      "notes": "PLACEHOLDER \u2014 not a verified ticker. Retained only to flag that any 'UBA'-like variant must be resolved to UBA. Marked pending."
+    },
+    {
+      "term": "SEPLAT",
+      "type": "TICKER",
+      "canonical": "Seplat Energy Plc",
+      "aliases": ["Seplat Energy", "Seplat"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "OANDO",
+      "type": "TICKER",
+      "canonical": "Oando Plc",
+      "aliases": ["Oando"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "TOTAL",
+      "type": "TICKER",
+      "canonical": "TotalEnergies Marketing Nigeria Plc",
+      "aliases": ["TotalEnergies", "Total Nigeria"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "GEREGU",
+      "type": "TICKER",
+      "canonical": "Geregu Power Plc",
+      "aliases": ["Geregu Power", "Geregu"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "TRANSPOWER",
+      "type": "TICKER",
+      "canonical": "Transcorp Power Plc",
+      "aliases": ["Transcorp Power"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "TRANSCORP",
+      "type": "TICKER",
+      "canonical": "Transnational Corporation Plc",
+      "aliases": ["Transcorp", "Transnational Corporation"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "DANGSUGAR",
+      "type": "TICKER",
+      "canonical": "Dangote Sugar Refinery Plc",
+      "aliases": ["Dangote Sugar"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "NESTLE",
+      "type": "TICKER",
+      "canonical": "Nestl\u00e9 Nigeria Plc",
+      "aliases": ["Nestle Nigeria", "Nestl\u00e9"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "GUINNESS",
+      "type": "TICKER",
+      "canonical": "Guinness Nigeria Plc",
+      "aliases": ["Guinness Nigeria"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "UNILEVER",
+      "type": "TICKER",
+      "canonical": "Unilever Nigeria Plc",
+      "aliases": ["Unilever Nigeria"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "PRESCO",
+      "type": "TICKER",
+      "canonical": "Presco Plc",
+      "aliases": ["Presco"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "OKOMUOIL",
+      "type": "TICKER",
+      "canonical": "The Okomu Oil Palm Company Plc",
+      "aliases": ["Okomu Oil", "Okomu Oil Palm"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "WAPCO",
+      "type": "TICKER",
+      "canonical": "Lafarge Africa Plc",
+      "aliases": ["Lafarge Africa", "Lafarge"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list. Note: ticker WAPCO, NOT 'LAFARGE'."
+    },
+    {
+      "term": "JBERGER",
+      "type": "TICKER",
+      "canonical": "Julius Berger Nigeria Plc",
+      "aliases": ["Julius Berger"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "JAIZBANK",
+      "type": "TICKER",
+      "canonical": "Jaiz Bank Plc",
+      "aliases": ["Jaiz Bank"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "UCAP",
+      "type": "TICKER",
+      "canonical": "United Capital Plc",
+      "aliases": ["United Capital"],
+      "review_status": "reviewed",
+      "notes": "Confirmed against NGX equities list."
+    },
+    {
+      "term": "NGX ASI",
+      "type": "ACRONYM",
+      "canonical": "NGX All-Share Index",
+      "aliases": ["All-Share Index", "ASI", "NGX All Share Index"],
+      "review_status": "reviewed",
+      "notes": "Broad market index."
+    },
+    {
+      "term": "MSCI",
+      "type": "ACRONYM",
+      "canonical": "MSCI (index provider)",
+      "aliases": ["MSCI Frontier Markets", "MSCI Emerging Markets", "Morgan Stanley Capital International"],
+      "review_status": "reviewed",
+      "notes": "Index provider; relevant to Nigeria's frontier/emerging classification."
+    },
+    {
+      "term": "OPEC",
+      "type": "ORG",
+      "canonical": "Organization of the Petroleum Exporting Countries",
+      "aliases": ["OPEC+", "Organization of the Petroleum Exporting Countries"],
+      "review_status": "reviewed",
+      "notes": "Producer cartel; ORG (not a regulator)."
+    },
+    {
+      "term": "NNPC",
+      "type": "ORG",
+      "canonical": "Nigerian National Petroleum Company Limited",
+      "aliases": ["NNPC Limited", "NNPCL", "Nigerian National Petroleum Company"],
+      "review_status": "reviewed",
+      "notes": "State oil company; ORG. Renamed NNPC Limited (NNPCL) in 2022."
+    },
+    {
+      "term": "FIRS",
+      "type": "REGULATOR",
+      "canonical": "Federal Inland Revenue Service",
+      "aliases": ["Federal Inland Revenue Service"],
+      "review_status": "reviewed",
+      "notes": "Tax authority."
+    },
+    {
+      "term": "DMO",
+      "type": "REGULATOR",
+      "canonical": "Debt Management Office",
+      "aliases": ["Debt Management Office", "DMO Nigeria"],
+      "review_status": "reviewed",
+      "notes": "Sovereign debt issuance/management."
+    },
+    {
+      "term": "NBS",
+      "type": "REGULATOR",
+      "canonical": "National Bureau of Statistics",
+      "aliases": ["National Bureau of Statistics", "NBS Nigeria"],
+      "review_status": "reviewed",
+      "notes": "Publishes inflation and GDP data. Statistical agency; typed REGULATOR as an official body."
+    },
+    {
+      "term": "banking",
+      "type": "SECTOR",
+      "canonical": "Banking",
+      "aliases": ["banks", "banking sector", "financial services"],
+      "review_status": "reviewed",
+      "notes": "Sector mention."
+    },
+    {
+      "term": "oil and gas",
+      "type": "SECTOR",
+      "canonical": "Oil and Gas",
+      "aliases": ["oil & gas", "upstream", "downstream", "energy sector"],
+      "review_status": "reviewed",
+      "notes": "Sector mention."
+    },
+    {
+      "term": "cement",
+      "type": "SECTOR",
+      "canonical": "Cement / Building Materials",
+      "aliases": ["building materials", "cement sector"],
+      "review_status": "reviewed",
+      "notes": "Sector mention."
+    },
+    {
+      "term": "telecoms",
+      "type": "SECTOR",
+      "canonical": "Telecommunications",
+      "aliases": ["telecommunications", "telco", "ICT", "telecom"],
+      "review_status": "reviewed",
+      "notes": "Sector mention."
+    },
+    {
+      "term": "consumer goods",
+      "type": "SECTOR",
+      "canonical": "Consumer Goods",
+      "aliases": ["FMCG", "fast-moving consumer goods"],
+      "review_status": "reviewed",
+      "notes": "Sector mention."
+    },
+    {
+      "term": "insurance",
+      "type": "SECTOR",
+      "canonical": "Insurance",
+      "aliases": ["insurers", "insurance sector"],
+      "review_status": "reviewed",
+      "notes": "Sector mention."
+    },
+    {
+      "term": "agriculture",
+      "type": "SECTOR",
+      "canonical": "Agriculture",
+      "aliases": ["agribusiness", "agro", "agric sector"],
+      "review_status": "reviewed",
+      "notes": "Sector mention."
+    },
+    {
+      "term": "power",
+      "type": "SECTOR",
+      "canonical": "Power / Utilities",
+      "aliases": ["electricity", "utilities", "gencos", "discos"],
+      "review_status": "reviewed",
+      "notes": "Sector mention. gencos/discos are operators within it."
+    },
+    {
+      "term": "japa",
+      "type": "PIDGIN",
+      "canonical": "emigrate (colloquial)",
+      "aliases": ["japaing", "japa wave"],
+      "review_status": "reviewed",
+      "notes": "Pidgin/Yoruba-derived: to emigrate, often in a brain-drain context."
+    },
+    {
+      "term": "wahala",
+      "type": "PIDGIN",
+      "canonical": "trouble (colloquial)",
+      "aliases": ["wahaala"],
+      "review_status": "reviewed",
+      "notes": "Pidgin: trouble, problem, difficulty."
+    },
+    {
+      "term": "dey",
+      "type": "PIDGIN",
+      "canonical": "is / are (copula, colloquial)",
+      "aliases": ["dey dey"],
+      "review_status": "reviewed",
+      "notes": "Pidgin copula / continuous marker. Do not treat as a content entity; lexicon entry only."
+    },
+    {
+      "term": "sabi",
+      "type": "PIDGIN",
+      "canonical": "know / understand (colloquial)",
+      "aliases": ["sabi sabi"],
+      "review_status": "reviewed",
+      "notes": "Pidgin: to know. Lexicon entry only."
+    },
+    {
+      "term": "hustle",
+      "type": "PIDGIN",
+      "canonical": "informal income-generating activity",
+      "aliases": ["hustlers", "side hustle"],
+      "review_status": "pending",
+      "notes": "Colloquial; appears in MSME/livelihood coverage. Canonical form pending confirmation."
+    },
+    {
+      "term": "go-slow",
+      "type": "PIDGIN",
+      "canonical": "traffic congestion (colloquial)",
+      "aliases": ["go slow", "hold-up"],
+      "review_status": "pending",
+      "notes": "Nigerian English for traffic jam; appears in logistics/port coverage. Pending confirmation of scope."
+    },
+    {
+      "term": "fuel subsidy",
+      "type": "ACRONYM",
+      "canonical": "petrol subsidy",
+      "aliases": ["petrol subsidy", "PMS subsidy", "subsidy removal"],
+      "review_status": "reviewed",
+      "notes": "Recurring fiscal/policy topic."
+    },
+    {
+      "term": "recapitalisation",
+      "type": "ACRONYM",
+      "canonical": "bank recapitalisation",
+      "aliases": ["recapitalization", "capital adequacy"],
+      "review_status": "reviewed",
+      "notes": "Triggers a capital_raise event frame."
+    },
+    {
+      "term": "PMS",
+      "type": "ACRONYM",
+      "canonical": "Premium Motor Spirit (petrol)",
+      "aliases": ["petrol", "premium motor spirit"],
+      "review_status": "reviewed",
+      "notes": "Fuel type."
+    },
+    {
+      "term": "AGO",
+      "type": "ACRONYM",
+      "canonical": "Automotive Gas Oil (diesel)",
+      "aliases": ["diesel", "automotive gas oil"],
+      "review_status": "reviewed",
+      "notes": "Fuel type."
+    },
+    {
+      "term": "FX window",
+      "type": "ACRONYM",
+      "canonical": "foreign-exchange trading window",
+      "aliases": ["FX market window", "official window"],
+      "review_status": "reviewed",
+      "notes": "Generic term covering I&E, SMIS, and successor arrangements."
+    },
+    {
+      "term": "Eurobond",
+      "type": "ACRONYM",
+      "canonical": "sovereign Eurobond",
+      "aliases": ["Eurobonds", "FGN Eurobond"],
+      "review_status": "reviewed",
+      "notes": "Foreign-currency sovereign debt."
+    },
+    {
+      "term": "waybill",
+      "type": "PIDGIN",
+      "canonical": "goods transport receipt",
+      "aliases": ["way bill"],
+      "review_status": "pending",
+      "notes": "Logistics term; scope in financial coverage pending confirmation."
+    },
+    {
+      "term": "Aso Rock",
+      "type": "ORG",
+      "canonical": "Nigerian Presidency (seat of government)",
+      "aliases": ["Presidency", "Villa"],
+      "review_status": "pending",
+      "notes": "Metonym for the Presidency. Typed ORG pending confirmation of whether a separate GOV type is warranted."
+    }
+  ]
+}

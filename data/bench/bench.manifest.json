@@ -1,0 +1,22 @@
+{
+  "bench_version": "0.1.0",
+  "generated_at": "2026-10-20T14:10:04.082341+00:00",
+  "n_items": 0,
+  "splits": {},
+  "task_counts": {
+    "sentiment": 0,
+    "ner": 0,
+    "events": 0,
+    "money": 0
+  },
+  "dataset_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "text_redistributed_items": 0,
+  "regenerate_command": "python -m naijafinsent.bench build --records data/annotation/records.jsonl --out data/bench",
+  "license_note": "Labels, URLs, and offsets are released for research use. Full article text is included only for sources whose terms permit redistribution.",
+  "file_counts": {
+    "bench": 0,
+    "sentiment": 0,
+    "ner": 0,
+    "events": 0
+  }
+}

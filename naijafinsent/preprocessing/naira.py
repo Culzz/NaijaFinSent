@@ -112,20 +112,6 @@ _CURRENCY_PREFIX = (
     r"(?:\u20a6|\$|\u00a3|\u20ac|NGN|USD|GBP|EUR|naira|N(?=\d))"
 )
 
-# Full money surface: [currency] number [sep number] [unit]
-_MONEY_RE = re.compile(
-    rf"""
-    (?P<prefix>{_CURRENCY_PREFIX})?
-    \s*
-    (?P<num>{_NUMBER})
-    (?:\s*(?:-|\u2013|\u2014|to)\s*(?P<num2>{_NUMBER}))?      # range
-    \s*
-    (?P<unit>trillion|trn|tn|billion|bn|million|mn|thousand|k|b|m|t)\b?
-    """,
-    re.IGNORECASE | re.VERBOSE,
-)
-
-
 def _to_float(raw: str) -> float | None:
     try:
         return float(raw.replace(",", ""))

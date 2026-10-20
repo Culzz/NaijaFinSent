@@ -57,28 +57,20 @@ def _simple_sentiment(text: str):
     else:
         label = SentimentLabel.NEUTRAL
     first = text.split(". ")[0]
+    probs = {"positive": 0.0, "negative": 0.0, "neutral": 0.0, "uncertain": 0.0}
+    probs[label.value] = 0.5
+    for other in ("neutral", "uncertain"):
+        if other != label.value:
+            probs[other] = 0.25 if probs[other] == 0.0 else probs[other]
+    probs[label.value] = 1.0 - sum(v for k, v in probs.items() if k != label.value)
     return SentimentPrediction(
         label=label,
-        confidence=0.5,
-        probabilities={label.value: 0.5, "neutral": 0.25, "uncertain": 0.25},
+        confidence=probs[label.value],
+        probabilities=probs,
         evidence=[EvidenceSpan(text=first, start=0, end=len(first))],
         model=ModelRef(name="offline-keyword", version="0.1.0", task="sentiment",
                        calibrated=False),
     )
-
-
-def _simple_entities(text: str):
-    from naijafinsent.preprocessing.lexicon import Lexicon
-    from naijafinsent.schemas import EntityPrediction, EntitySpan, EntityType
-
-    lex = Lexicon()
-    spans = lex.match(text)
-    return [
-        EntityPrediction(span=s, entity_id=None, canonical_name=s.text,
-                         resolution_method="lexicon", confidence=0.6)
-        for s in spans
-        if s.entity_type in {e for e in EntityType}
-    ], EntityType
 
 
 def cmd_demo(args: argparse.Namespace) -> int:

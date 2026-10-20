@@ -26,8 +26,7 @@ from urllib.parse import urlparse
 
 import httpx
 from tenacity import (
-    RetryCallState,
-    retry,
+    Retrying,
     retry_if_exception_type,
     stop_after_attempt,
     wait_exponential,
@@ -235,12 +234,6 @@ class FetchResult:
             return self.content.decode("utf-8", errors="replace")
 
 
-def _retry_wait(retry_state: RetryCallState) -> float:
-    """Exponential backoff base, capped to keep tests and crawls sane."""
-    attempt = retry_state.attempt_number
-    return min(2.0 ** (attempt - 1), 30.0)
-
-
 class Fetcher:
     """Polite, SSRF-guarded HTTP client over ``httpx``.
 
@@ -331,12 +324,6 @@ class Fetcher:
         return b"".join(chunks)
 
     # -- the actual fetch -------------------------------------------------
-    @retry(
-        retry=retry_if_exception_type((httpx.TransportError, httpx.HTTPStatusError)),
-        stop=stop_after_attempt(3),
-        wait=_retry_wait,
-        reraise=True,
-    )
     def _fetch_once(self, url: str) -> FetchResult:
         host = (urlparse(url).hostname or "").lower()
         self._rate_limiter.wait(host)
@@ -347,9 +334,7 @@ class Fetcher:
                 if response.status_code >= 500:
                     response.raise_for_status()
                 if response.status_code >= 400:
-                    raise FetchError(
-                        f"HTTP {response.status_code} for {url}"
-                    )
+                    raise FetchError(f"HTTP {response.status_code} for {url}")
 
                 content_type = response.headers.get("content-type", "")
                 if not self._content_type_ok(content_type):
@@ -360,6 +345,7 @@ class Fetcher:
                 body = self._read_capped(response)
                 encoding = response.encoding or "utf-8"
                 final_url = str(response.url)
+                status_code = response.status_code
         except (TooLargeError, UnsupportedContentTypeError, FetchError):
             raise
         except httpx.TransportError:
@@ -370,7 +356,7 @@ class Fetcher:
         return FetchResult(
             url=url,
             final_url=final_url,
-            status_code=response.status_code,
+            status_code=status_code,
             content_type=content_type,
             content=body,
             encoding=encoding,
@@ -379,12 +365,20 @@ class Fetcher:
     def fetch(self, url: str) -> FetchResult:
         """Fetch ``url``, applying all guards and retries.
 
-        Raises a ``FetchError`` subclass on any failure. The retry decorator on
-        ``_fetch_once`` uses the instance ``max_attempts`` only at construction
-        time; to keep behaviour explicit we cap attempts here as well.
+        Retries transient transport errors and 5xx responses with exponential
+        backoff, up to ``max_attempts``. Raises a ``FetchError`` subclass on any
+        permanent failure.
         """
         self.check_url(url)
-        return self._fetch_once(url)
+        retryer = Retrying(
+            retry=retry_if_exception_type(
+                (httpx.TransportError, httpx.HTTPStatusError)
+            ),
+            stop=stop_after_attempt(max(1, self.max_attempts)),
+            wait=wait_exponential(multiplier=1, max=30),
+            reraise=True,
+        )
+        return retryer(self._fetch_once, url)
 
 
 def fetch_bytes(url: str, *, fetcher: Fetcher | None = None) -> bytes:

@@ -1,0 +1,46 @@
+# Pre-commit hooks for NaijaFinSent.
+#
+# Install once:  pre-commit install
+# Run manually:  pre-commit run --all-files
+#
+# NOTE: `rev` values below are pinned but should be refreshed periodically:
+#   pre-commit autoupdate
+# then re-run `pre-commit run --all-files` and commit the bump.
+
+repos:
+  # --- General hygiene -----------------------------------------------------
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: ["--maxkb=2048"]
+      - id: detect-private-key
+
+  # --- Python lint + format (ruff) ----------------------------------------
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.5.5
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+      - id: ruff-format
+
+  # --- Secret scanning -----------------------------------------------------
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.18.4
+    hooks:
+      - id: gitleaks
+
+  # --- Local: enforce the framework-free-core architecture rule -----------
+  - repo: local
+    hooks:
+      - id: architecture-test
+        name: architecture test (framework-free core)
+        entry: pytest tests/test_architecture.py -q
+        language: system
+        pass_filenames: false
+        always_run: true

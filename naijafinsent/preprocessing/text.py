@@ -215,10 +215,10 @@ def tokenize_words(text: str) -> list[str]:
     # Currency symbols are treated as word characters so "₦2bn" stays whole.
     word_char = r"\w\u20a6\u0024\u00a3\u20ac"  # \w, ₦, $, £, €
     pattern = re.compile(
-        rf"(?:[{word_char}]+(?:[.,][{word_char}]+)*)"   # word/number group (1)
-        rf"|(?:[{word_char}]+(?:[-/][{word_char}]+)+)"  # hyphen/slash-compound (2)
-        rf"|(?:[{word_char}]+)"                          # plain word run (3)
-        rf"|(?:[^\s{word_char}])"                        # single punctuation char (4)
+        rf"(?:[{word_char}]+(?:[.,][{word_char}]+)*[-/][{word_char}]+(?:[.,][{word_char}]+)*)"  # hyphen/slash compound (0)
+        rf"|(?:[{word_char}]+(?:[.,][{word_char}]+)*)"   # word/number group with internal . , (1)
+        rf"|(?:[{word_char}]+)"                          # plain word run (2)
+        rf"|(?:[^\s{word_char}])"                        # single punctuation char (3)
     )
     return pattern.findall(text)
 
