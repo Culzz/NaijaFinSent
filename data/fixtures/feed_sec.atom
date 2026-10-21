@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SYNTHETIC fixture. Fictional content for tests only. Not real reporting. -->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>SEC Nigeria — Synthetic Fixture</title>
+  <link href="https://sec.example/"/>
+  <updated>2026-10-12T10:00:00Z</updated>
+  <id>urn:uuid:4d2f2f6e-0000-4000-8000-000000000000</id>
+  <entry>
+    <title>SEC warns operators over unregistered capital market schemes</title>
+    <link href="https://sec.example/circulars/2026/10/unregistered-schemes-warning"/>
+    <id>urn:uuid:4d2f2f6e-0000-4000-8000-000000000001</id>
+    <updated>2026-10-12T10:00:00Z</updated>
+    <summary>Regulator issues a public warning and restates registration requirements.</summary>
+  </entry>
+  <entry>
+    <title>SEC approves new rules on digital asset service providers</title>
+    <link href="https://sec.example/circulars/2026/10/digital-asset-rules"/>
+    <id>urn:uuid:4d2f2f6e-0000-4000-8000-000000000002</id>
+    <updated>2026-10-13T11:30:00Z</updated>
+    <summary>New framework for licensing digital asset service providers takes effect.</summary>
+  </entry>
+</feed>

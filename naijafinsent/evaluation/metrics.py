@@ -121,18 +121,28 @@ def _as_1d(values: Sequence[Any] | np.ndarray, name: str) -> np.ndarray:
 
 
 def _label_order(
-    y_true: np.ndarray, y_pred: np.ndarray, labels: Sequence[str] | None
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    labels: Sequence[str] | None,
+    *,
+    default: Sequence[str] | None = None,
 ) -> list[str]:
     """Resolve the label order.
 
     When ``labels`` is given it is trusted verbatim (this is how you keep an empty
-    class in the report). Otherwise labels are the sorted union of observed
-    values, which keeps results deterministic regardless of input order.
+    class in the report). Otherwise the order is ``default`` (when supplied) merged
+    with any observed values, so a declared-but-absent class still counts toward a
+    macro average instead of silently disappearing.
     """
     if labels is not None:
         return list(labels)
-    observed = sorted({*map(str, y_true.tolist()), *map(str, y_pred.tolist())})
-    return observed
+    order = list(default) if default is not None else []
+    seen = set(order)
+    for value in sorted({*map(str, y_true.tolist()), *map(str, y_pred.tolist())}):
+        if value not in seen:
+            order.append(value)
+            seen.add(value)
+    return order
 
 
 def _safe_div(numerator: float, denominator: float) -> float:
@@ -155,6 +165,8 @@ def confusion_matrix(
     y_true: Sequence[Any],
     y_pred: Sequence[Any],
     labels: Sequence[str] | None = None,
+    *,
+    default_labels: Sequence[str] | None = None,
 ) -> tuple[np.ndarray, list[str]]:
     """Return ``(matrix, labels)`` where ``matrix[i, j]`` counts true *i*, pred *j*.
 
@@ -164,6 +176,8 @@ def confusion_matrix(
       same document. Unequal lengths raise ``ValueError``.
     * Labels not present in ``labels`` (when supplied) are an error: we refuse to
       silently drop rows, because that is how support leaks out of a report.
+    * When ``labels`` is ``None`` the order is ``default_labels`` (if given) merged
+      with observed values, so a declared-but-absent class still occupies a row.
     """
     yt = _as_1d(y_true, "y_true")
     yp = _as_1d(y_pred, "y_pred")
@@ -171,7 +185,7 @@ def confusion_matrix(
         raise ValueError(
             f"y_true and y_pred must be the same length: {yt.shape[0]} != {yp.shape[0]}"
         )
-    order = _label_order(yt, yp, labels)
+    order = _label_order(yt, yp, labels, default=default_labels)
     index = {lab: i for i, lab in enumerate(order)}
     matrix = np.zeros((len(order), len(order)), dtype=np.int64)
     for t, p in zip(yt.tolist(), yp.tolist(), strict=True):
@@ -199,15 +213,17 @@ def per_class_prf(
     y_true: Sequence[Any],
     y_pred: Sequence[Any],
     labels: Sequence[str] | None = None,
+    *,
+    default_labels: Sequence[str] | None = None,
 ) -> dict[str, dict[str, float]]:
     """Per-class precision / recall / F1 / support, computed from the matrix.
 
     All averaging here is **macro over the declared label set**: every class
     counts once whether or not it appears in the data, so adding an all-zero
     class for a missing label drags the average down. That is intentional and is
-    why ``labels`` should always be passed from :mod:`naijafinsent.constants`.
+    why callers should pass :data:`DEFAULT_LABELS` (or ``default_labels``).
     """
-    matrix, order = confusion_matrix(y_true, y_pred, labels)
+    matrix, order = confusion_matrix(y_true, y_pred, labels, default_labels=default_labels)
     tp = np.diag(matrix).astype(float)
     predicted = matrix.sum(axis=0).astype(float)  # column sums
     support = matrix.sum(axis=1).astype(float)    # row sums

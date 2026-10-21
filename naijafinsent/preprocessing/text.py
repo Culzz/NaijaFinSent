@@ -161,8 +161,14 @@ def split_sentences(text: str, *, max_len: int | None = None) -> list[str]:
                 cut = s.rfind(" ", 0, max_len)
                 if cut <= 0:
                     cut = max_len
-                out.append(s[:cut].strip())
-                s = s[cut:].strip()
+                piece = s[:cut].strip()
+                if piece:
+                    out.append(piece)
+                # Always make progress: strip leading whitespace so the next
+                # iteration sees a strictly shorter string.
+                s = s[cut:].lstrip()
+                if not s:
+                    break
             if s:
                 out.append(s)
         sentences = out

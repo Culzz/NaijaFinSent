@@ -350,12 +350,13 @@ def efficiency_table(rows: Sequence[dict[str, Any]]) -> list[dict[str, Any]]:
     def sort_key(r: dict[str, Any]) -> tuple[int, float, float]:
         f1 = r.get("macro_f1")
         cost = r.get("usd_per_1k")
-        # Rows without an F1 sort last; rows without a cost are treated as free
-        # only for ordering, never for reporting.
+        # Rows without an F1 sort last; a row with no cost reading sorts after a
+        # priced one (unknown is not free), so the table never implies a model is
+        # cheap when we simply did not measure it.
         return (
             0 if f1 is not None else 1,
             -(f1 if f1 is not None else 0.0),
-            cost if cost is not None else 0.0,
+            cost if cost is not None else float("inf"),
         )
 
     return sorted(out, key=sort_key)

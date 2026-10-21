@@ -116,7 +116,10 @@ def _check_overlaps(record: AnnotationRecord) -> list[str]:
     """Spans of *different types* must never overlap.
 
     Identical (start, end, type) triples collapse to one; identical offsets with
-    different types are a cross-type overlap and are reported.
+    different types are a cross-type overlap and are reported. Duplicate
+    detection is scoped per collection: a MONEY span listed in ``spans`` and
+    again as ``money[].span`` is intentional redundancy (the money annotation
+    *carries* its span), not a duplicate-mention error.
     """
     problems: list[str] = []
     # Collect typed spans from across the record with provenance labels.
@@ -138,14 +141,19 @@ def _check_overlaps(record: AnnotationRecord) -> list[str]:
                 )
             )
 
-    seen_triples: set[tuple[int, int, str]] = set()
-    for where, start, end, etype in typed:
-        triple = (start, end, etype)
-        if triple in seen_triples:
-            problems.append(
-                _problem(RULE_DUPLICATE_SPAN, f"{where}: duplicate span ({start}:{end}, {etype})")
-            )
-        seen_triples.add(triple)
+    # Duplicate triples are only errors *within* the same collection, so a MONEY
+    # span appearing in both `spans` and `money` is not flagged.
+    for prefix in ("spans[", "money[", "events["):
+        seen_triples: set[tuple[int, int, str]] = set()
+        for where, start, end, etype in typed:
+            if not where.startswith(prefix):
+                continue
+            triple = (start, end, etype)
+            if triple in seen_triples:
+                problems.append(
+                    _problem(RULE_DUPLICATE_SPAN, f"{where}: duplicate span ({start}:{end}, {etype})")
+                )
+            seen_triples.add(triple)
 
     for i in range(len(typed)):
         for j in range(i + 1, len(typed)):

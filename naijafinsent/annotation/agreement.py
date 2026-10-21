@@ -166,7 +166,7 @@ def _sentiment_vote(records: Sequence[AnnotationRecord]) -> SentimentAnnotation 
     winner = Counter(labels).most_common(1)[0][0]
     # Preserve the task/target of the first matching annotation.
     for r in records:
-        if r.sentiment is not None and str(getattr(r.sentiment.label, "value")) == winner:
+        if r.sentiment is not None and str(r.sentiment.label.value) == winner:
             return r.sentiment.model_copy(update={"annotator": "majority_vote"})
     return SentimentAnnotation(label=SentimentAnnotation.model_fields["label"].annotation(winner))
 

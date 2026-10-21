@@ -45,3 +45,4 @@ Thumbs.db
 # W&B / local runs
 wandb/
 runs/
+data/*.db

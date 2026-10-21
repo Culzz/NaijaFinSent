@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * NaijaFinSent base styles.
+ *
+ * The palette is deliberately restrained: this is a research console whose
+ * subject is measurement of news language, not a trading product. Deep green
+ * (brand) and a muted naira gold are used for accents only; sentiment and
+ * entity colours come from the label contract in src/lib/format.ts.
+ */
+
+:root {
+  /* Label colours mirrored as CSS variables for inline SVG and print. */
+  --label-positive: #059669;
+  --label-negative: #e11d48;
+  --label-neutral: #64748b;
+  --label-uncertain: #d97706;
+
+  color-scheme: light;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased;
+    font-feature-settings: "tnum" 1;
+  }
+
+  /* A single, consistent focus treatment. Never remove focus outlines. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-600 ring-offset-2 ring-offset-white;
+  }
+
+  /* Reduced motion: kill transitions/animations entirely. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Long evidence quotes and URLs must not blow out the layout. */
+  a {
+    @apply break-words;
+  }
+}
+
+@layer components {
+  /* Card used across feature pages. */
+  .nfs-card {
+    @apply rounded-md border border-slate-200 bg-white p-4;
+  }
+
+  /* Panel that frames a single prediction, with its model + evidence. */
+  .nfs-prediction {
+    @apply rounded-md border border-slate-200 bg-white;
+  }
+
+  /* Skip link, visible only when focused. */
+  .nfs-skip-link {
+    @apply absolute left-2 top-2 -translate-y-20 rounded bg-brand-700 px-3 py-2 text-sm font-medium text-white transition-transform focus:translate-y-0;
+  }
+}
+
+/* Recharts tooltips inherit our typography; keep them legible. */
+.recharts-default-tooltip {
+  @apply !rounded-md !border !border-slate-300 !bg-white !text-xs;
+}
+
+@media print {
+  /* Printing is a common way to circulate a chart out of context — so we
+     keep the disclaimer and coverage-measurement labels in the print output. */
+  .nfs-no-print {
+    display: none !important;
+  }
+}

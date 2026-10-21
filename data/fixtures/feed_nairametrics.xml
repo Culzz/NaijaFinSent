@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SYNTHETIC fixture. Fictional content for tests only. Not real reporting. -->
+<rss version="2.0">
+  <channel>
+    <title>Nairametrics — Synthetic Fixture</title>
+    <link>https://nairametrics.example/</link>
+    <description>Fictional feed used by NaijaFinSent tests.</description>
+    <item>
+      <title>Naira firms to 1,540/$ as CBN clears FX backlog</title>
+      <link>https://nairametrics.example/2026/10/naira-firms-fx-backlog</link>
+      <guid isPermaLink="true">https://nairametrics.example/2026/10/naira-firms-fx-backlog</guid>
+      <pubDate>Fri, 10 Oct 2026 07:15:00 GMT</pubDate>
+      <description>The naira strengthened at the official window after the CBN cleared backlog.</description>
+    </item>
+    <item>
+      <title>MTN Nigeria adds subscribers despite tariff pressure</title>
+      <link>https://nairametrics.example/2026/10/mtn-nigeria-subscribers</link>
+      <guid isPermaLink="true">https://nairametrics.example/2026/10/mtn-nigeria-subscribers</guid>
+      <pubDate>Sat, 11 Oct 2026 08:40:00 GMT</pubDate>
+      <description>MTNN grew its subscriber base even as tariffs stayed under pressure.</description>
+    </item>
+  </channel>
+</rss>

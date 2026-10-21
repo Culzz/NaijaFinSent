@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SYNTHETIC fixture. Fictional content for tests only. Not real reporting. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://punch.example/business/cbn-mpr-decision-2026/</loc>
+    <lastmod>2026-10-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://punch.example/business/naira-appreciation-fx-market/</loc>
+    <lastmod>2026-10-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://punch.example/business/gtco-capital-raise-rights-issue/</loc>
+    <lastmod>2026-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+</urlset>

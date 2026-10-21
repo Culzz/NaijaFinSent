@@ -456,7 +456,3 @@ class TfidfSvmSentimentModel(_LinearMixin, BaseSentimentModel):
             "calibrated": self.calibrated,
             "version": self.version,
         }
-
-
-# Keep an explicit reference so ruff does not flag the import of tokenize_words.
-_ = tokenize_words
