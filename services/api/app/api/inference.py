@@ -11,12 +11,11 @@ import time
 from typing import Annotated, Any
 
 from fastapi import APIRouter, Body, Request
-from naijafinsent.inference.pipeline import AnalysisPipeline
+from naijafinsent.inference.pipeline import AnalysisPipeline, StubPipeline
 from naijafinsent.schemas import (
     AnalysisResult,
     EntityPrediction,
     SentimentPrediction,
-    StubPipeline,
 )
 from naijafinsent.utils import sha256_text
 
