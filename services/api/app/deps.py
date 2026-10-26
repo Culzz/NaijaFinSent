@@ -24,8 +24,8 @@ from naijafinsent.config import Settings, get_settings
 from naijafinsent.inference.pipeline import AnalysisPipeline, StubPipeline
 from sqlalchemy.orm import Session
 
-from services.api.app.db.base import get_db as _get_db_session
-from services.api.app.db.repositories import Repositories
+from app.db.base import get_db as _get_db_session
+from app.db.repositories import Repositories
 
 
 # --------------------------------------------------------------------------
@@ -55,7 +55,7 @@ def load_pipeline() -> tuple[AnalysisPipeline, dict[str, Any]]:
     is deliberate and loud (it is recorded in ``_pipeline_info``), never silent:
     serving a stub while claiming to serve a model would be the worst outcome.
     """
-    from services.api.app.services.model_loader import describe_memory_budget, load_pipeline_from_registry
+    from app.services.model_loader import describe_memory_budget, load_pipeline_from_registry
 
     pipeline, info = load_pipeline_from_registry()
     info["memory_note"] = describe_memory_budget(pipeline)
@@ -114,7 +114,7 @@ PipelineDep = Annotated[AnalysisPipeline, Depends(get_pipeline)]
 def get_db() -> Session:  # noqa: ANN201 - mirrors the base helper for override points
     """Request-scoped DB session.
 
-    Re-exported here so routers depend on ``services.api.app.deps`` and tests can
+    Re-exported here so routers depend on ``app.deps`` and tests can
     override exactly one symbol.
     """
     yield from _get_db_session()

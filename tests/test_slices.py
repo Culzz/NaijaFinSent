@@ -93,9 +93,11 @@ def test_slice_report_counts_are_correct_per_bucket():
     publishers = report["publisher"]
     assert publishers["punch"]["count"] == 2
     assert publishers["businessday"]["count"] == 1
-    # punch items are indices 1 (negative->neutral, wrong) and 2 (correct):
-    # macro over all four labels = 2/4 = 0.5
-    assert publishers["punch"]["metric"] == pytest.approx(0.5)
+    # punch items are indices 1 (gold negative -> pred neutral, wrong) and
+    # 2 (gold neutral -> pred neutral, correct). Macro-F1 over the four
+    # declared sentiment labels: positive 0, negative 0, neutral
+    # tp=1 fp=1 fn=0 -> F1=2/3, uncertain 0 -> (0+0+2/3+0)/4 = 1/6.
+    assert publishers["punch"]["metric"] == pytest.approx(1 / 6)
     assert report["__meta__"]["n_items"] == 4
 
 
@@ -104,8 +106,11 @@ def test_slice_report_metrics_match_manual_computation():
     gold = ["positive", "negative", "neutral", "uncertain"]
     pred = ["positive", "neutral", "neutral", "uncertain"]
     report = S.slice_report(pred, gold, samples, ["length"], n_bootstrap=50, min_size=1)
-    # The "long" bucket is exactly item 2, which is correct -> macro F1 = 1.0
-    assert report["length"]["long:1500-3000"]["metric"] == pytest.approx(1.0)
+    # The "long" bucket is exactly item 2 (gold neutral -> pred neutral, a
+    # perfect prediction for that class). Macro-F1 over the four declared
+    # sentiment labels gives (0 + 0 + 1 + 0)/4 = 0.25 — a single-class
+    # perfect slice does NOT reach 1.0 because absent classes contribute 0.
+    assert report["length"]["long:1500-3000"]["metric"] == pytest.approx(0.25)
 
 
 def test_slice_report_flags_low_support():
@@ -171,8 +176,10 @@ def test_drift_curve_is_sorted_and_counts_items():
     assert [p["period"] for p in points] == ["2023-12", "2024-01", "2024-02"]
     assert points[1]["count"] == 2
     assert points[0]["count"] == 1
-    # 2023-12 is item 3, correct -> F1 1.0
-    assert points[0]["metric"] == pytest.approx(1.0)
+    # 2023-12 is item 3 (gold uncertain -> pred uncertain). Macro-F1 with the
+    # default label space: uncertain F1 = 1, the other three classes 0 ->
+    # (0 + 0 + 0 + 1)/4 = 0.25.
+    assert points[0]["metric"] == pytest.approx(0.25)
 
 
 def test_drift_curve_single_item_period_has_no_ci():

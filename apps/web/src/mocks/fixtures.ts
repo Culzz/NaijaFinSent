@@ -370,7 +370,7 @@ export const mockNewsList: NewsListItem[] = ARTICLE_SEEDS.map((seed) => ({
   snippet: snippetOf(seed.body),
 }));
 
-function seedById(id: string): ArticleSeed | undefined {
+export function seedById(id: string): ArticleSeed | undefined {
   return ARTICLE_SEEDS.find((seed) => seed.id === id);
 }
 
@@ -652,7 +652,7 @@ export const mockEntityDetails: Record<string, EntityDetail> = Object.fromEntrie
 // Events
 // ---------------------------------------------------------------------------
 
-function timelineFor(daysAgo: number, title: string, publisher: string, sourceId: string, eventType: EventDetail["event_type"], body: string): TimelineEntry {
+function timelineFor(daysAgo: number, title: string, publisher: string, sourceId: string, eventType: EventDetail["event_type"], body: string): TimelineEntry[] {
   return [
     {
       published_at: ISO(daysAgo + 2, 8, 0),

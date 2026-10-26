@@ -24,7 +24,7 @@ from naijafinsent.utils import utcnow
 from sqlalchemy import and_, select
 from sqlalchemy.orm import Session
 
-from services.api.app.db import models as m
+from app.db import models as m
 
 logger = logging.getLogger(__name__)
 
@@ -259,7 +259,7 @@ def evaluate_active_watchlists(
     session: Session, *, settings: Settings | None = None, now: Any | None = None
 ) -> list[EvaluationOutcome]:
     """Evaluate every active watchlist. Used by the worker's alert stage."""
-    from services.api.app.db.repositories import WatchlistRepository
+    from app.db.repositories import WatchlistRepository
 
     repo = WatchlistRepository(session)
     outcomes: list[EvaluationOutcome] = []

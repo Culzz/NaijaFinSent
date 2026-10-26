@@ -20,7 +20,16 @@ def _overconfident_probs(seed: int = 0, n: int = 400) -> tuple[np.ndarray, np.nd
     true_p = rng.uniform(0.5, 1.0, size=n)
     correct = rng.random(n) < true_p
     labels = np.where(correct, 1, 0)
-    # Model is over-confident: push probabilities toward the extremes.
+    # Flip a few labels so the model is imperfect but still informative —
+    # without a flip, argmax(probs) == label always and the NLL-optimal
+    # temperature degenerates to 0 (sharpen to one-hot), which is not a
+    # meaningful calibration scenario.
+    flip = rng.random(n) < 0.1
+    labels = np.where(flip, 1 - labels, labels)
+    # Model is over-confident: push probabilities toward the extremes. The
+    # probability stays coherent with the *pre-flip* argmax, so the 10% of
+    # flipped labels are exactly the confident-wrong cases that temperature
+    # scaling must soften.
     raw = np.clip(0.5 + (true_p - 0.5) * 2.5, 0.001, 0.999)
     probs = np.where(correct, raw, 1.0 - raw)
     return probs, labels

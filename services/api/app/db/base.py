@@ -31,13 +31,23 @@ logger = logging.getLogger(__name__)
 
 
 class Base(DeclarativeBase):
-    """Declarative base shared by every model in :mod:`services.api.app.db.models`."""
+    """Declarative base shared by every model in :mod:`app.db.models`."""
 
     # Keeps ``repr()`` output readable when debugging without pulling in the
     # whole column list for wide tables.
     def __repr__(self) -> str:  # pragma: no cover - debugging aid
         pk = getattr(self, "id", None)
         return f"<{type(self).__name__} id={pk!r}>"
+
+
+# Make the metadata more forgiving for hot reloads / duplicate imports in dev.
+Base.metadata.naming_convention = {
+    "ix": "ix_%(column_0_label)s",
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s",
+}
 
 
 def _ensure_sqlite_parent(url: URL) -> None:
@@ -144,6 +154,14 @@ def get_session_factory() -> sessionmaker[Session]:
     return _session_factory
 
 
+# Backwards-compatible aliases used by some modules.
+def _session_local_factory():
+    return get_session_factory()
+
+
+SessionLocal = _session_local_factory()
+
+
 def reset_engine_state(
     *, engine: Engine | None = None, session_factory: sessionmaker[Session] | None = None
 ) -> None:
@@ -168,7 +186,7 @@ def init_db(*, engine: Engine | None = None, drop_first: bool = False) -> Engine
     ``drop_first`` exists for tests that want a pristine file each session.
     """
     # Import for the side effect of registering every model on ``Base.metadata``.
-    from services.api.app.db import models as _models  # noqa: F401
+    from app.db import models as _models  # noqa: F401
 
     target = engine or get_engine()
     if drop_first:
@@ -214,3 +232,8 @@ def check_connection(engine: Engine | None = None) -> tuple[bool, str]:
     except Exception as exc:  # noqa: BLE001 - health checks report, never raise
         logger.warning("database health check failed: %r", exc)
         return False, f"error: {type(exc).__name__}"
+
+
+# Backwards-compatible aliases
+engine = get_engine()
+SessionLocal = get_session_factory()

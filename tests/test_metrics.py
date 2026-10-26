@@ -27,10 +27,19 @@ def test_macro_f1_hand_computed_three_classes():
     # negative: tp=1 fp=0 fn=1 -> P=1.0 R=0.5 F1=2*1*.5/1.5=0.6666...
     # neutral:  tp=0 fp=0 fn=0 -> F1=0.0
     # macro = (0.6667 + 0.6667 + 0.0) / 3
+    #
+    # The label space must be *declared*: with no explicit ``labels`` the
+    # function falls back to the full DEFAULT_LABELS sentiment space (4 labels,
+    # so ``uncertain`` also contributes a 0 and the default call yields
+    # (2/3 + 2/3 + 0 + 0) / 4 = 1/3 — asserted below as well).
     y_true = ["positive", "negative", "negative"]
     y_pred = ["positive", "positive", "negative"]
     expected = (2 / 3 + 2 / 3 + 0.0) / 3
-    assert M.macro_f1(y_true, y_pred) == pytest.approx(expected, abs=1e-9)
+    assert M.macro_f1(
+        y_true, y_pred, labels=["positive", "negative", "neutral"]
+    ) == pytest.approx(expected, abs=1e-9)
+    # Default: full sentiment label space, absent labels contribute 0.
+    assert M.macro_f1(y_true, y_pred) == pytest.approx((2 / 3 + 2 / 3) / 4, abs=1e-9)
 
 
 def test_macro_f1_perfect_is_one():
@@ -161,7 +170,7 @@ def test_multi_label_f1_accepts_dense_matrix():
 
 def test_micro_and_macro_differ_on_imbalanced_labels():
     gold = [["earnings"]] * 10 + [["oil_energy"]]
-    pred = [["earnings"]] * 10  # misses oil_energy entirely
+    pred = [["earnings"]] * 11  # predicts "earnings" on every doc; misses oil_energy
     out = M.multi_label_f1(gold, pred, labels=["earnings", "oil_energy"])
     assert out["micro"]["f1"] > out["macro"]["f1"]
 

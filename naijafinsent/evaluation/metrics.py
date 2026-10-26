@@ -254,7 +254,12 @@ def macro_f1(
     and predictions (they contribute 0.0). This is the headline sentiment metric
     because the rarest classes (``uncertain``) must not be drowned by ``neutral``.
     """
-    prf = per_class_prf(y_true, y_pred, labels)
+    prf = per_class_prf(
+        y_true,
+        y_pred,
+        labels,
+        default_labels=None if labels is not None else DEFAULT_LABELS,
+    )
     if not prf:
         raise ValueError("macro_f1 is undefined with no labels")
     return float(np.mean([v["f1"] for v in prf.values()]))
@@ -507,9 +512,20 @@ def _as_label_matrix(
     index = {lab: i for i, lab in enumerate(labels)}
 
     def _to_matrix(values: Any) -> np.ndarray:
+        # Probe for an already-dense numeric matrix first: converting to
+        # dtype=object unconditionally would destroy the dense path forever.
+        try:
+            probe = np.asarray(values)
+        except ValueError:
+            probe = None  # ragged lists of lists — sparse path below
+        if (
+            probe is not None
+            and probe.ndim == 2
+            and probe.shape[1] == len(labels)
+            and probe.dtype.kind in "biuf"
+        ):
+            return probe.astype(np.int64)
         arr = np.asarray(values, dtype=object)
-        if arr.ndim == 2 and arr.shape[1] == len(labels) and arr.dtype != object:
-            return arr.astype(np.int64)
         out = np.zeros((len(values), len(labels)), dtype=np.int64)
         for row_i, row in enumerate(values):
             if isinstance(row, (set, frozenset)) or hasattr(row, "__iter__") and not isinstance(

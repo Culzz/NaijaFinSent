@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { Column, DataTable } from "../../components/DataTable";
+import { DataTable, type Column } from "../../components/DataTable";
 import {
   ActiveFilters,
   ClearButton,

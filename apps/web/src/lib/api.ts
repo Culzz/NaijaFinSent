@@ -100,7 +100,7 @@ export class ApiError extends Error {
       init.isRetryable ??
       (init.kind === "network" ||
         init.kind === "timeout" ||
-        (init.status !== null && (init.status >= 500 || init.status === 408 || init.status === 429)));
+        (init.status != null && (init.status >= 500 || init.status === 408 || init.status === 429)));
   }
 
   /** Short, non-technical line suitable for an ErrorState panel. */

@@ -365,8 +365,13 @@ class TfidfSvmSentimentModel(_LinearMixin, BaseSentimentModel):
 
     def _make_pipeline(self):
         from sklearn.calibration import CalibratedClassifierCV
-        from sklearn.linear_model import LinearSVC
         from sklearn.pipeline import Pipeline
+
+        # sklearn >= 1.9 moved LinearSVC out of linear_model — try both homes.
+        try:
+            from sklearn.linear_model import LinearSVC  # type: ignore[no-redef]
+        except ImportError:  # sklearn >= 1.9 backs it in sklearn.svm
+            from sklearn.svm import LinearSVC
 
         features = _build_vectorizer(
             use_char=self.use_char,

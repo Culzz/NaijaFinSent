@@ -19,14 +19,14 @@ from naijafinsent.schemas import (
 )
 from naijafinsent.utils import sha256_text
 
-from services.api.app.api._common import ValidationFailure, request_fingerprint
-from services.api.app.deps import (
+from app.api._common import ValidationFailure, request_fingerprint
+from app.deps import (
     PipelineDep,
     RateLimitDep,
     SettingsDep,
     get_request_id,
 )
-from services.api.app.schemas import AnalyzeRequest, EntityRequest, SentimentRequest
+from app.schemas import AnalyzeRequest, EntityRequest, SentimentRequest
 
 router = APIRouter(tags=["inference"])
 
@@ -203,8 +203,8 @@ def _record_run(request: Request, settings: Any, result: AnalysisResult, text: s
     bad than returning a 500 for a successful analysis.
     """
     try:
-        from services.api.app.db.base import session_scope
-        from services.api.app.db.repositories import RunRepository
+        from app.db.base import session_scope
+        from app.db.repositories import RunRepository
         from services.worker.ids import new_run_id
 
         with session_scope() as session:

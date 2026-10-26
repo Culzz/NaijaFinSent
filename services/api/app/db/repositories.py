@@ -28,7 +28,7 @@ from sqlalchemy import Select, and_, case, delete, func, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from services.api.app.db import models as m
+from app.db import models as m
 
 
 # --------------------------------------------------------------------------

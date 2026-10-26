@@ -48,7 +48,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from services.api.app.db.base import Base
+from app.db.base import Base
 
 # Shared JSON column type. ``JSON`` works on both SQLite (as TEXT with a
 # serializer) and Postgres (jsonb-ish); we keep the portable variant.

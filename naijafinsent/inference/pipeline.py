@@ -195,7 +195,24 @@ class AnalysisPipeline:
 class StubPipeline(AnalysisPipeline):
     """Zero-dependency pipeline used by tests and the offline dev server.
 
-    Deterministic, rule-based, and honest about its limitations.
+    Deterministic, rule-based, and honest about its limitations. Wires the
+    deterministic models (lexicon sentiment, rule NER, keyword events) so the
+    demo path produces real, evidence-backed predictions with no weights.
     """
 
     stub_models = True
+
+    def __init__(self, *, settings: Settings | None = None, **kwargs) -> None:
+        from naijafinsent.entity_resolution.resolver import EntityResolver
+        from naijafinsent.event_extraction.keywords import KeywordEventModel
+        from naijafinsent.ner.rules import RuleBasedNer
+        from naijafinsent.sentiment.lexicon import LexiconSentimentModel
+
+        super().__init__(
+            sentiment_model=LexiconSentimentModel(),
+            ner_model=RuleBasedNer(),
+            event_model=KeywordEventModel(),
+            entity_resolver=EntityResolver(),
+            settings=settings,
+            **kwargs,
+        )

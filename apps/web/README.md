@@ -92,12 +92,17 @@ See `.env.example`. Only `VITE_*` variables are exposed to the bundle.
 ## Docker
 
 ```bash
+# from this directory
 docker build -t naijafinsent-web .
 docker run --rm -p 8080:80 naijafinsent-web
 ```
 
 `nginx.conf` serves the SPA with a history fallback and proxies `/api/` to an
 `api:8000` upstream when running under docker-compose.
+
+In the platform compose stack (`infra/docker-compose.yml`), `infra/web.Dockerfile`
+builds the bundle and serves it with `serve` on **port 3000**; the API runs as
+the sibling `api` service on port 8000.
 
 ## Accessibility
 

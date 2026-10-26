@@ -16,6 +16,7 @@ import re
 from dataclasses import dataclass, field
 from datetime import date
 
+from naijafinsent.event_extraction.attributes import extract_values
 from naijafinsent.schemas import EventPrediction
 
 # Weights sum to 1.0. Documented so the merge decision is auditable.
@@ -42,6 +43,18 @@ def _jaccard(a: set[str], b: set[str]) -> float:
     if not a or not b:
         return 0.0
     return len(a & b) / len(a | b)
+
+
+def _value_keys(event: EventPrediction) -> set[str]:
+    """Verbatim money/percent mentions: parsed attributes plus raw evidence text.
+
+    The evidence text is mined too so events whose pipeline did not attach
+    parsed values still contribute novel numeric facts ("50 basis points").
+    """
+    keys = {str(v.get("text")) for v in (event.attributes or {}).get("values", [])}
+    for v in extract_values(_text_of(event)):
+        keys.add(v["text"])
+    return keys
 
 
 def _entity_keys(event: EventPrediction) -> set[str]:
@@ -198,26 +211,22 @@ def whats_new(cluster: EventCluster, new_event: EventPrediction) -> dict:
     Returns newly introduced entities, values, dates, and a novelty score in
     [0, 1] where 0 means "pure repeat" and 1 means "everything is new".
     """
-    prior = cluster.members[:-1] if new_event in cluster.members else cluster.members
+    # Identity, not equality: an equal-valued copy of the latest member is
+    # exactly the "pure repeat" case and would otherwise make ``prior`` empty
+    # (pydantic models compare by value).
+    is_latest = any(new_event is m for m in cluster.members)
+    prior = cluster.members[:-1] if is_latest else cluster.members
     prior_entities: set[str] = set()
     prior_values: set[str] = set()
     prior_dates: set[str] = set()
     for ev in prior:
         prior_entities |= _entity_keys(ev)
-        prior_values |= {
-            str(v.get("text")) for v in (ev.attributes or {}).get("values", [])
-        }
+        prior_values |= _value_keys(ev)
         if ev.event_date:
             prior_dates.add(ev.event_date.isoformat())
 
     new_entities = sorted(_entity_keys(new_event) - prior_entities)
-    new_values = sorted(
-        {
-            str(v.get("text"))
-            for v in (new_event.attributes or {}).get("values", [])
-        }
-        - prior_values
-    )
+    new_values = sorted(_value_keys(new_event) - prior_values)
     new_dates = sorted(
         ({new_event.event_date.isoformat()} if new_event.event_date else set())
         - prior_dates

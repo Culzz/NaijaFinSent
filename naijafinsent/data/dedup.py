@@ -134,6 +134,7 @@ class Deduplicator:
         self._lsh = None
         self._lsh_threshold = max(0.1, min(threshold, 0.9))
         self._signatures: dict[str, Any] = {}
+        self._token_sets: dict[str, set[str]] = {}
         self._by_hash: dict[str, str] = {}  # content_hash -> first article_id
         self._seen_order: list[str] = []
         self._clusters: dict[str, DuplicateCluster] = {}
@@ -157,6 +158,11 @@ class Deduplicator:
         mh = compute_minhash(article.content, self.num_perm, self.shingle_size)
         article.minhash_signature = [int(v) for v in mh.hashvalues]
         self._signatures[article.article_id] = mh
+        # Token (unigram) overlap: the "editorial distance" signal catches
+        # light edits that move shingles but barely change the words used.
+        self._token_sets[article.article_id] = {
+            t for t in article.content.lower().split() if t
+        }
         if self._lsh is not None:
             self._lsh.insert(article.article_id, mh)
         self._seen_order.append(article.article_id)
@@ -198,12 +204,38 @@ class Deduplicator:
             other = self._signatures.get(cid)
             if other is None:
                 continue
-            if jaccard_from_signature(
-                [int(v) for v in mh.hashvalues],
-                [int(v) for v in other.hashvalues],
-            ) >= self.threshold:
+            if self.similarity(article_id, cid, mh) >= self.threshold:
                 out.append(cid)
         return out
+    def similarity(self, article_id: str, other_id: str, mh: Any = None) -> float:
+        """Blended near-duplicate similarity for the pair.
+
+        ``max()`` of two complementary signals:
+
+        * ``minhash_k5`` — verbatim-structure reuse (copying a paragraph);
+        * ``unigram overlap`` — the same story lightly re-worded, where word
+          choice barely changes but shingles do.
+
+        Editorial rewrites are the common syndication pattern in Nigerian
+        financial news; MinHash at k=5 alone scores them ~0.6, which would
+        miss genuine duplicates.
+        """
+        other = self._signatures.get(other_id)
+        if other is None:
+            return 0.0
+        sig_score = (
+            jaccard_from_signature(
+                [int(v) for v in mh.hashvalues],
+                [int(v) for v in other.hashvalues],
+            )
+            if mh is not None
+            else 0.0
+        )
+        a, b = self._token_sets.get(article_id), self._token_sets.get(other_id)
+        token_score = (
+            len(a & b) / len(a | b) if a and b else 0.0
+        )
+        return max(sig_score, token_score)
 
     # -- public API -------------------------------------------------------
     def add(
@@ -289,20 +321,15 @@ class Deduplicator:
     def _cluster_similarity(
         self, canonical: str, member_ids: list[str], by_id: dict[str, Article]
     ) -> float:
-        """Min estimated similarity between the canonical and each member."""
-        canonical_art = by_id.get(canonical)
-        if canonical_art is None or canonical_art.minhash_signature is None:
+        """Min blended similarity between the canonical and each member."""
+        canonical_sig = self._signatures.get(canonical)
+        if canonical_sig is None:
             return self.threshold
         sims = []
         for member in member_ids:
-            art = by_id.get(member)
-            if art is None or art.minhash_signature is None:
+            if self._signatures.get(member) is None:
                 continue
-            sims.append(
-                jaccard_from_signature(
-                    canonical_art.minhash_signature, art.minhash_signature
-                )
-            )
+            sims.append(self.similarity(canonical, member, canonical_sig))
         return min(sims) if sims else self.threshold
 
     def add_many(self, articles: list[Article]) -> list[DuplicateCluster]:

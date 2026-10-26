@@ -29,8 +29,8 @@ from naijafinsent.config import Settings, get_settings
 from naijafinsent.utils import sha256_text, slugify, utcnow
 from sqlalchemy.orm import Session
 
-from services.api.app.db import models as m
-from services.api.app.db.repositories import ArticleRepository
+from app.db import models as m
+from app.db.repositories import ArticleRepository
 from services.worker.ids import new_run_id
 
 logger = logging.getLogger(__name__)

@@ -67,7 +67,7 @@ _CUT = re.compile(
     r"decline[ds]?|fell|drop(ped|s)?|fall|slump(ed|s)?)\b", re.IGNORECASE
 )
 _HOLD = re.compile(
-    r"\b(hold|held|retain(ed|s)?|unchanged|leave[s]? unchanged|maintain(ed|s)?)\b",
+    r"\b(holds?|held|retain(ed|s)?|unchanged|leave[s]? unchanged|maintain(ed|s)?)\b",
     re.IGNORECASE,
 )
 
@@ -213,6 +213,8 @@ def actor_roles(
     before: list[str] = []
     after: list[str] = []
     for e in entities:
+        if span is not None and (e.span.end <= span[0] or e.span.start >= span[1]):
+            continue  # entity lies entirely outside the analysed span
         name = e.canonical_name or e.span.text
         (before if e.span.start < pivot else after).append(name)
     return {"likely_subject": before, "likely_object": after}

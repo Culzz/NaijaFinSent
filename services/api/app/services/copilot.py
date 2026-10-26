@@ -242,7 +242,7 @@ def make_db_retriever(
     is the title plus the URL context. That limitation is real and documented
     rather than papered over: you cannot quote a passage you do not store.
     """
-    from services.api.app.db.repositories import ArticleRepository  # local import
+    from app.db.repositories import ArticleRepository  # local import
 
     def _retrieve(query: str, top_k: int) -> list[Passage]:
         repo = ArticleRepository(session)

@@ -1,24 +1,19 @@
-"""Shared helpers for the API routers: validation, error envelopes, run recording."""
-
+"""Shared helpers for the API routers."""
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Generator
 
 from fastapi import HTTPException, Request, status
-from naijafinsent.config import Settings
+from naijafinsent.config import Settings, get_settings
 from naijafinsent.schemas import SentimentPrediction
 from naijafinsent.utils import sha256_text, utcnow
 
-from services.api.app.schemas import ErrorResponse
+from app.db.base import SessionLocal
+from app.schemas import ErrorResponse
 
 
 class ValidationFailure(HTTPException):
-    """A 422 with the standard error envelope pre-filled.
-
-    FastAPI's default validation error has a different shape from our envelope,
-    which would force every client to handle two formats. Routers raise this
-    instead so there is exactly one error shape.
-    """
+    """A 422 with the standard error envelope pre-filled."""
 
     def __init__(self, detail: str, *, code: str = "validation_error", request: Request | None = None):
         super().__init__(
@@ -27,6 +22,25 @@ class ValidationFailure(HTTPException):
         )
         self.code = code
         self.request_id = getattr(request.state, "request_id", None) if request else None
+
+
+def get_db() -> Generator:
+    """One session per request; commits successful requests, rolls back errors.
+
+    Without the commit, write endpoints (watchlist create/delete, article
+    upsert) would only flush into a doomed transaction — rows vanish the
+    moment the request closes its session.
+    """
+    db = SessionLocal()
+    try:
+        yield db
+    except Exception:
+        db.rollback()
+        raise
+    else:
+        db.commit()
+    finally:
+        db.close()
 
 
 def error_envelope(
@@ -38,9 +52,6 @@ def error_envelope(
     request_id: str | None,
     settings: Settings | None = None,
 ) -> dict[str, Any]:
-    """Build the single error body used by every failure path."""
-    from naijafinsent.config import get_settings
-
     settings = settings or get_settings()
     return ErrorResponse(
         error=message,
@@ -53,7 +64,6 @@ def error_envelope(
 
 
 def prediction_response(prediction: SentimentPrediction, settings: Settings) -> dict[str, Any]:
-    """Wrap a single prediction with status + disclaimer for the API surface."""
     return {
         "prediction": prediction.model_dump(mode="json"),
         "status": "complete",
@@ -62,7 +72,6 @@ def prediction_response(prediction: SentimentPrediction, settings: Settings) -> 
 
 
 def request_fingerprint(text: str) -> str:
-    """Hash a request body for dedup/observability without storing the text."""
     return sha256_text(text)[:32]
 
 
@@ -73,6 +82,7 @@ def now_iso() -> str:
 __all__ = [
     "ValidationFailure",
     "error_envelope",
+    "get_db",
     "now_iso",
     "prediction_response",
     "request_fingerprint",

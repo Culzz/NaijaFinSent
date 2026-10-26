@@ -163,18 +163,22 @@ def fit_temperature(
         return negative_log_likelihood(logits / t, labels)
 
     # --- gradient descent in log-temperature space --------------------
+    # Bounded to the same range as the grid fallback so a degenerate
+    # objective (e.g. an argmax that always matches the label) cannot push
+    # T to 0 and produce divide-by-zero softmax noise.
     log_t = 0.0
+    log_t_min, log_t_max = float(np.log(0.05)), float(np.log(20.0))
     velocity = 0.0
     best_log_t = 0.0
     best_nll = nll_before
     for _ in range(max_iter):
+        log_t = float(np.clip(log_t + velocity, log_t_min, log_t_max))
         t = float(np.exp(log_t))
         scaled = logits / t
         probs = _softmax(scaled)
         # d(NLL)/d(log_t) for a single T scale factor.
         grad = float(np.mean(np.sum(probs * scaled, axis=1) - scaled[np.arange(len(idx)), idx]))
         velocity = 0.9 * velocity - lr * grad
-        log_t += velocity
         cur = nll_at(float(np.exp(log_t)))
         if cur < best_nll:
             best_nll = cur

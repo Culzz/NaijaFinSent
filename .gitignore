@@ -46,3 +46,18 @@ Thumbs.db
 wandb/
 runs/
 data/*.db
+
+# Python dev clutter
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.test_db/
+
+# Local throwaway capture files
+.p*.txt
+.pe*.txt
+.o*.txt
+.lo.txt
+.out.txt
+.err.txt
+.pytest*.txt

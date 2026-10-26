@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { Column, DataTable } from "../../components/DataTable";
+import { DataTable, type Column } from "../../components/DataTable";
 import {
   ActiveFilters,
   ClearButton,
@@ -30,7 +30,7 @@ import {
   type NewsListItem,
   type SentimentLabel,
 } from "../../lib/schemas";
-import { EVENT_TYPE_LABELS, entityStyle, formatDate, hostnameOf, truncate } from "../../lib/format";
+import { eventTypeLabel, entityStyle, formatDate, hostnameOf, truncate } from "../../lib/format";
 import { statusStyle } from "../../lib/format";
 import { ProvenanceChip } from "../../components/PredictionBadge";
 
@@ -293,7 +293,7 @@ export function NewsExplorer() {
             value={searchParams.get("event_type") ?? ""}
             onChange={(value) => updateParam("event_type", value)}
             placeholder="All event types"
-            options={EVENT_TYPES.map((type) => ({ value: type, label: EVENT_TYPE_LABELS[type] }))}
+            options={EVENT_TYPES.map((type) => ({ value: type, label: eventTypeLabel(type) }))}
           />
         </FilterField>
 
