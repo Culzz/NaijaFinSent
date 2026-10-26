@@ -53,5 +53,5 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev,api]"
 
-      - name: Eval regression gate (golden set vs frozen baseline)
-        run: python scripts/eval_gate.py --tolerance 0.02
+      - name: Eval regression gates (golden demo set + gold set vs frozen baselines)
+        run: python scripts/eval_gate.py --gate all --tolerance 0.02

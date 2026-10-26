@@ -1,0 +1,109 @@
+{
+  "n_items": 1004,
+  "n_curated_hand_style": 93,
+  "n_templated_synthetic": 911,
+  "annotator": "model-assisted-glm (LLM-assisted pass, NO human confirmation yet)",
+  "inter_annotator_kappa": null,
+  "inter_annotator_kappa_note": "Pending dual human annotation. The gate reports kappa between the assisted labels and the lexicon system, not between annotators.",
+  "labels": {
+    "positive": 294,
+    "neutral": 209,
+    "uncertain": 205,
+    "negative": 296
+  },
+  "markers": {
+    "body_style": 73,
+    "capital_raise": 8,
+    "naira_symbol": 170,
+    "ticker_collision": 4,
+    "earnings": 18,
+    "mna": 5,
+    "monetary_policy": 11,
+    "pidgin": 39,
+    "energy": 7,
+    "sanction": 6,
+    "headline_fragment": 112,
+    "trn_bn_abbrev": 7,
+    "entity_paired": 5,
+    "dividend": 10,
+    "fx": 12,
+    "naira_abbrev": 98,
+    "templated_capital_raise": 54,
+    "naira_words": 2,
+    "templated_dividend": 116,
+    "calendar_dates": 36,
+    "kobo_format": 21,
+    "templated_earnings": 190,
+    "ticker_style": 100,
+    "templated_fx": 77,
+    "templated_headline": 90,
+    "templated_market": 32,
+    "templated_mna": 36,
+    "templated_pidgin": 31,
+    "circular": 48,
+    "templated_policy": 72,
+    "templated_rates": 64,
+    "templated_sanction": 149
+  },
+  "topics": {
+    "capital_raise": 62,
+    "financials": 10,
+    "earnings": 203,
+    "telecoms": 3,
+    "monetary_policy": 35,
+    "industrials": 3,
+    "dividend": 162,
+    "energy": 9,
+    "market": 55,
+    "regulatory": 221,
+    "policy": 3,
+    "fx": 89,
+    "mna": 54,
+    "pidgin": 31,
+    "debt_market": 64
+  },
+  "families": {
+    "curated": 93,
+    "templated_capital_raise": 54,
+    "templated_dividend": 116,
+    "templated_earnings": 190,
+    "templated_fx": 77,
+    "templated_headline": 90,
+    "templated_market": 32,
+    "templated_mna": 36,
+    "templated_pidgin": 31,
+    "templated_policy": 72,
+    "templated_rates": 64,
+    "templated_sanction": 149
+  },
+  "split_sizes_flat": {
+    "train": 702,
+    "dev": 153,
+    "test_random": 149
+  },
+  "split_view_sizes": {
+    "random": {
+      "train": 702,
+      "dev": 153,
+      "test_random": 149
+    },
+    "source_held_out": {
+      "train": 652,
+      "dev": 162,
+      "test_source": 190
+    },
+    "time_held_out": {
+      "train": 402,
+      "dev": 99,
+      "test_time": 503
+    },
+    "test": {
+      "train": 803,
+      "dev": 0,
+      "test": 201
+    }
+  },
+  "split_seed": 7,
+  "entity_targets": 4,
+  "entity_target_examples": 7
+}
