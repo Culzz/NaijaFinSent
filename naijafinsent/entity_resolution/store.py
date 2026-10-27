@@ -538,6 +538,23 @@ def build_seed_entities() -> tuple[list[Entity], list[EntityAlias]]:
             ],
         )
     )
+    # JSE-listed parent — deliberately a separate entity so "MTN Group"
+    # news is never booked onto the Nigerian subsidiary's timeline.
+    # No ticker registered: the JSE code "MTN" collides with the Nigerian
+    # alias index and the ambiguous path is the honest answer for bare "MTN".
+    add(
+        _mk(
+            "MTN Group Plc",
+            "ORG",
+            tickers=[],
+            sectors=["telecoms"],
+            aliases=[
+                ("MTN Group", "name"),
+                ("MTN Group Limited", "legal_name"),
+                ("MTN Group Holdings", "name"),
+            ],
+        )
+    )
     add(
         _mk(
             "Guaranty Trust Holding Company Plc",

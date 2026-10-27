@@ -146,7 +146,10 @@ def test_extract_attributes_shapes_the_full_record():
     assert attrs.date_basis == "absolute"
     assert attrs.direction == "raise"
     kinds = {v["kind"] for v in attrs.values}
-    assert kinds == {"money", "percent"}
+    # "50 basis points" is basis_points, "27.5 percent" is percent. There is no
+    # money here — and, since the currency-regex fix, stray "n" + digits (as in
+    # "On ... n 2026") no longer masquerade as naira amounts.
+    assert kinds == {"basis_points", "percent"}
 
 
 def test_extract_attributes_relative_needs_publish_date():

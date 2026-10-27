@@ -220,6 +220,14 @@
       "notes": "Confirmed against NGX equities list."
     },
     {
+      "term": "MTN Group",
+      "type": "ORG",
+      "canonical": "MTN Group Plc",
+      "aliases": ["MTN Group Limited", "MTN Group Holdings"],
+      "review_status": "reviewed",
+      "notes": "JSE-listed parent company; deliberately distinct from the Nigerian subsidiary. 'MTN' alone is the Nigeria alias; 'MTN Group' must never fuzzy-merge into it."
+    },
+    {
       "term": "GTCO",
       "type": "TICKER",
       "canonical": "Guaranty Trust Holding Company Plc",

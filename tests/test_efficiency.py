@@ -51,9 +51,11 @@ def test_time_predictions_returns_expected_shape():
 
 def test_time_predictions_is_deterministic_within_tolerance():
     model = CountingModel(delay=0.002)
-    a = E.time_predictions(model, ["x"] * 10, repeats=5, warmup=0)
-    b = E.time_predictions(model, ["x"] * 10, repeats=5, warmup=0)
-    # Timing is noisy; require the means to agree within a generous factor.
+    a = E.time_predictions(model, ["x"] * 10, repeats=5, warmup=1)
+    b = E.time_predictions(model, ["x"] * 10, repeats=5, warmup=1)
+    # Steady-state timing is noisy; require the means to agree within a generous
+    # factor. warmup=1 keeps lazy-import/cold-start cost out of the comparison
+    # (a warmup=0 first record polluted the mean enough to flake under load).
     assert a["mean_ms"] == pytest.approx(b["mean_ms"], rel=0.5)
 
 

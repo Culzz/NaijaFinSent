@@ -136,6 +136,21 @@ class CollisionRule:
     rationale: str = ""
 
 
+def _rule_key(text: str) -> str:
+    """Strict key for collision-rule surface matching.
+
+    Unlike :func:`~naijafinsent.entity_resolution.store.normalise_alias` —
+    which peels trailing ``nigeria``/``group``/``holdings`` and therefore
+    collapses ``"MTN Nigeria"``, ``"MTN Group"`` and ``"MTN"`` into the same
+    key — this only strips bare legal-form suffixes. Collision surfaces that
+    differ by those identity-bearing tokens stay different rules.
+    """
+    tokens = re.sub(r"[^a-z0-9]+", " ", str(text).lower()).split()
+    while len(tokens) > 1 and tokens[-1] in {"plc", "ltd", "limited", "inc", "nplc"}:
+        tokens.pop()
+    return " ".join(tokens)
+
+
 class TickerCollisionResolver:
     """Rules for surfaces where the same string means different things.
 
@@ -147,28 +162,37 @@ class TickerCollisionResolver:
     def __init__(self, rules: Iterable[CollisionRule] | None = None) -> None:
         self.rules: dict[str, list[CollisionRule]] = {}
         for rule in rules if rules is not None else default_collision_rules():
-            self.rules.setdefault(normalise_alias(rule.surface), []).append(rule)
+            self.rules.setdefault(_rule_key(rule.surface), []).append(rule)
 
     # -- lookup ---------------------------------------------------------
     def rule_for(self, mention: str) -> CollisionRule | None:
-        hits = self.rules.get(normalise_alias(mention), [])
+        hits = self.rules.get(_rule_key(mention), [])
         return hits[0] if hits else None
 
     def blocked_ids(self, mention: str) -> set[str]:
-        return {eid for rule in self.rules.get(normalise_alias(mention), []) for eid in rule.blocked}
+        return {eid for rule in self.rules.get(_rule_key(mention), []) for eid in rule.blocked}
 
     def preferred_with_hints(
         self, mention: str, context: ResolutionContext
     ) -> str | None:
-        """Entity to prefer *only if* the context supplies the required hints."""
-        for rule in self.rules.get(normalise_alias(mention), []):
+        """Entity to prefer *only if* the context supplies the required hints.
+
+        A rule whose surface form is itself unambiguous ("MTN Group" carries
+        the word ``group``) may carry **no** hints at all -- then the surface
+        alone settles it, provided the rule is not marked as refusing without
+        hints.
+        """
+        key = _rule_key(mention)
+        for rule in self.rules.get(key, []):
             if rule.required_hints and all(_hint_present(h, context) for h in rule.required_hints):
+                return rule.preferred
+            if not rule.required_hints and not rule.ambiguous_without_hint:
                 return rule.preferred
         return None
 
     def is_genuinely_ambiguous(self, mention: str, context: ResolutionContext) -> bool:
         """True when a rule says "do not choose" and the context cannot settle it."""
-        for rule in self.rules.get(normalise_alias(mention), []):
+        for rule in self.rules.get(_rule_key(mention), []):
             if not rule.ambiguous_without_hint:
                 continue
             if rule.required_hints and all(_hint_present(h, context) for h in rule.required_hints):
@@ -271,6 +295,43 @@ def default_collision_rules() -> list[CollisionRule]:
             required_hints=("sector:banking",),
             ambiguous_without_hint=True,
             rationale="'Fidelity' also names Fidelity Investments and Fidelity International.",
+        ),
+        CollisionRule(
+            surface="MTN Group",
+            preferred="org:mtn-group-plc",
+            required_hints=(),
+            ambiguous_without_hint=False,
+            rationale=(
+                "The surface itself carries 'group': it is the JSE-listed parent, "
+                "never the Nigerian subsidiary. No hint needed -- the string is "
+                "already unambiguous, and it must not fuzzy-merge into MTN "
+                "Nigeria (normalise_alias strips 'group', which is why this rule "
+                "exists)."
+            ),
+        ),
+        CollisionRule(
+            surface="MTN Nigeria",
+            preferred="org:mtn-nigeria-communications-plc",
+            required_hints=(),
+            ambiguous_without_hint=False,
+            rationale=(
+                "The surface carries 'nigeria': it is the NGX-listed subsidiary. "
+                "No hint needed -- the string is already unambiguous."
+            ),
+        ),
+        CollisionRule(
+            surface="MTN",
+            preferred="org:mtn-nigeria-communications-plc",
+            required_hints=("ticker:MTNN", "sector:telecoms"),
+            ambiguous_without_hint=True,
+            rationale=(
+                "Bare 'MTN' is the classic collision: the Nigerian unit's "
+                "nickname, the parent's JSE code, and the telecoms sector word. "
+                "In Nigerian-market text a ticker/sector hint settles it for the "
+                "subsidiary; without a hint we refuse to choose (honest 'I do "
+                "not know') rather than default the parent's news onto the "
+                "subsidiary timeline."
+            ),
         ),
     ]
 
@@ -573,20 +634,23 @@ class EntityResolver:
         if not text:
             return ResolutionResult(mention_text=mention, method="none", notes="empty mention")
 
-        # Ticker/type guard: a mention typed TICKER that does not resolve exactly
-        # must never be fuzzily linked to an unrelated company.
+        # Collision rules first: a rule whose surface form is itself
+        # unambiguous ("MTN Group") can settle the mention outright, while a
+        # hint-dependent rule ("MTN") either resolves with context or refuses.
+        preferred = self.collisions.preferred_with_hints(text, ctx)
+        if preferred and self.store.get(preferred) is not None:
+            entity = self.store.get(preferred)
+            return ResolutionResult(
+                mention_text=text,
+                entity_id=preferred,
+                canonical_name=entity.canonical_name if entity else None,
+                method="context",
+                confidence=0.9,
+                notes=(
+                    "collision rule satisfied by surface form / context hints"
+                ),
+            )
         if self.collisions.is_genuinely_ambiguous(text, ctx):
-            preferred = self.collisions.preferred_with_hints(text, ctx)
-            if preferred and self.store.get(preferred) is not None:
-                entity = self.store.get(preferred)
-                return ResolutionResult(
-                    mention_text=text,
-                    entity_id=preferred,
-                    canonical_name=entity.canonical_name if entity else None,
-                    method="context",
-                    confidence=0.9,
-                    notes="collision rule satisfied by context hints",
-                )
             return ResolutionResult(
                 mention_text=text,
                 method="ambiguous",
@@ -741,7 +805,15 @@ def _coerce_context(context: ResolutionContext | dict[str, Any] | None) -> Resol
 
 
 def _coerce_span(mention: Any) -> EntitySpan | None:
-    """Accept an ``EntitySpan`` or a dict/tuple-shaped mention."""
+    """Accept an ``EntitySpan``, an ``EntityPrediction`` (pipeline output), or a
+    dict/tuple-shaped mention.
+
+    The pipeline passes NER predictions straight into ``resolve``; rejecting
+    them here meant ``resolve`` silently returned an empty list and the whole
+    product shipped with zero entity data.
+    """
+    if isinstance(mention, EntityPrediction):
+        return mention.span
     if isinstance(mention, EntitySpan):
         return mention
     if isinstance(mention, dict):

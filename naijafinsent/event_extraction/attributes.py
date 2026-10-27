@@ -154,19 +154,34 @@ def extract_direction(text: str) -> str | None:
 
 _PERCENT_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(?:percent|per cent|%)", re.IGNORECASE)
 _MONEY_RE = re.compile(
-    r"(?:₦|N|\bNGN\b|\bUSD\b|\$|£|€)\s?[\d,]+(?:\.\d+)?(?:\s?(?:trillion|billion|million|bn|mn|m|k))?",
+    r"(?:₦|\bNGN\b|\bUSD\b|\$|£|€)\s?[\d,]+(?:\.\d+)?(?:\s?(?:trillion|trn|tn|billion|bn|million|mn|kobo|k))?"
+    r"|\b(?:NGN|USD)\b\s?[\d,]+(?:\.\d+)?(?:\s?(?:trillion|trn|tn|billion|bn|million|mn|kobo|k))?"
+    r"|N(?=\d)[\d,]+(?:\.\d+)?(?:\s?(?:trillion|trn|tn|billion|bn|million|mn|kobo|k))?"
+    r"|\b[\d,]+(?:\.\d+)?\s?(?:trillion|billion|million)\s+(?:naira|kobo|dollars?|pounds?|euros?)\b"
+    r"|\b[\d,]+(?:\.\d+)?\s?(?:trillion|trn|tn|billion|bn|million)\b(?!\s*(?:barrels?|bpd|per\b|basis\b))",
     re.IGNORECASE,
 )
+_BPS_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(?:bps|basis points?)", re.IGNORECASE)
 
 
 def extract_values(text: str) -> list[dict]:
-    """Extract numeric values (money and percentages) with their offsets.
+    """Extract numeric values (money, percentages, basis points) with offsets.
 
-    Values are kept verbatim alongside the parsed number; missing units are
-    never inferred here (the money parser owns that rule).
+    Scaled amounts without a currency marker (``1.2trn``) are kept verbatim;
+    the money parser owns values and never infers a missing currency. ``kobo``
+    precedes ``k`` in every unit alternation so ``N25 kobo`` is not truncated
+    to ``N25 k``.
     """
     out: list[dict] = []
+    seen: list[tuple[int, int]] = []
+
+    def room(start: int, end: int) -> bool:
+        return all(end <= s or start >= e for s, e in seen)
+
     for m in _PERCENT_RE.finditer(text):
+        if not room(m.start(), m.end()):
+            continue
+        seen.append((m.start(), m.end()))
         out.append(
             {
                 "kind": "percent",
@@ -177,7 +192,24 @@ def extract_values(text: str) -> list[dict]:
                 "end": m.end(),
             }
         )
+    for m in _BPS_RE.finditer(text):
+        if not room(m.start(), m.end()):
+            continue
+        seen.append((m.start(), m.end()))
+        out.append(
+            {
+                "kind": "basis_points",
+                "text": m.group(0),
+                "value": float(m.group(1)),
+                "unit": "bps",
+                "start": m.start(),
+                "end": m.end(),
+            }
+        )
     for m in _MONEY_RE.finditer(text):
+        if not room(m.start(), m.end()):
+            continue
+        seen.append((m.start(), m.end()))
         out.append(
             {
                 "kind": "money",

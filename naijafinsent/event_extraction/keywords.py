@@ -165,7 +165,15 @@ class KeywordEventModel(EventModelMixin):
         while i < n:
             j = i
             # Advance to the next sentence terminator followed by space/EOS.
-            while j < n and text[j] not in ".!?\n":
+            # A '.' immediately followed by a digit is inside a decimal number
+            # ("50 basis points to 27.75 percent") — never a terminator.
+            while j < n:
+                ch = text[j]
+                if ch == "." and j + 1 < n and text[j + 1].isdigit():
+                    j += 1
+                    continue
+                if ch in ".!?\n":
+                    break
                 j += 1
             if j < n and text[j] in ".!?":
                 j += 1

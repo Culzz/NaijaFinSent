@@ -246,7 +246,7 @@ _MONEY_SPAN_RE = re.compile(
     (?:
         (?P<nmark>N)(?P<num3>{_NUMBER})                        # bare N + digits
         (?:\s*(?:-|\u2013|\u2014|to)\s*(?P<num3b>{_NUMBER}))?
-        \s*(?P<unit3>trillion|trn|tn|billion|bn|million|mn|thousand|k|b|m|t)?\b
+        \s*(?P<unit3>trillion|trn|tn|billion|bn|million|mn|thousand|kobo|k)?\b
     )
     |
     (?:
@@ -254,6 +254,12 @@ _MONEY_SPAN_RE = re.compile(
         \s*(?P<unit4>trillion|billion|million|thousand)\s*
         (?P<word4>naira|kobo|dollars?|pounds?|euros?)
         \b
+    )
+    |
+    (?:
+        (?P<num5>{_NUMBER})                                    # bare scaled amount (1.2trn)
+        \s*(?P<unit5>trillion|trn|tn|billion|bn|million)\b
+        (?!\s*(?:barrels?|bpd|per\b|basis\b))
     )
     """,
     re.IGNORECASE | re.VERBOSE,
@@ -264,9 +270,14 @@ def find_money_mentions(text: str) -> list[EntitySpan]:
     """Find money mentions in ``text`` and return them as ``EntitySpan`` objects.
 
     Deterministic, regex-based, and non-overlapping (leftmost-longest). Requires
-    an explicit currency marker (symbol, ISO code, bare ``N`` before digits, or a
-    currency word directly after a scale word) so we do not tag arbitrary
-    numbers. Spans are typed ``EntityType.MONEY`` with offsets into ``text``.
+    either an explicit currency marker (symbol, ISO code, bare ``N`` before
+    digits, or a currency word directly after a scale word) **or** an explicit
+    scale word (``1.2trn``, ``450bn``) — a bare scaled amount carries no
+    inferred currency and any consumer must read its ``currency: None``
+    honestly. Scaled amounts immediately followed by oil/unit nouns
+    (``1.2 million barrels``, ``per basis``) are not money; we tag arbitrary
+    numbers never. Spans are typed ``EntityType.MONEY`` with offsets into
+    ``text``.
     """
     if not text:
         return []

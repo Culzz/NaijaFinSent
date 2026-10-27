@@ -15,14 +15,34 @@ from dataclasses import dataclass, field
 from typing import Protocol
 
 from naijafinsent.config import Settings, get_settings
+from naijafinsent.event_extraction.attributes import extract_attributes
 from naijafinsent.schemas import (
     AnalysisResult,
+    EntityType,
     EventPrediction,
     ModelRef,
     ProcessingStatus,
     SentimentPrediction,
 )
 from naijafinsent.utils import sha256_text, utcnow
+
+def _span_entity_type(span: object) -> EntityType | None:
+    """Entity type of a NER mention (``EntityPrediction``, span, or dict)."""
+    if isinstance(span, dict):
+        raw = span.get("entity_type") or (span.get("span") or {}).get("entity_type")
+    else:
+        raw = getattr(span, "entity_type", None)
+        if raw is None:
+            raw = getattr(getattr(span, "span", None), "entity_type", None)
+    if raw is None:
+        return None
+    if isinstance(raw, EntityType):
+        return raw
+    try:
+        return EntityType(str(raw).split(".")[-1].split(":")[-1].lower().strip("'\" "))
+    except ValueError:
+        return None
+
 
 LIMITATIONS: tuple[str, ...] = (
     "Predictions describe language in published coverage, not fundamentals.",
@@ -128,7 +148,21 @@ class AnalysisPipeline:
             s = time.perf_counter()
             try:
                 entities = self.ner_model.predict(text)
-                ctx.record("ner", True, f"{len(entities)} mentions",
+                # EVENT_TRIGGER spans are event cues, not entities: without this
+                # filter they leak into timelines as noisy "ambiguous"
+                # predictions ("cut", "raised"). The event model matches triggers
+                # from the sentence text itself, so nothing is lost.
+                triggers = sum(
+                    1 for e in entities if _span_entity_type(e) == EntityType.EVENT_TRIGGER
+                )
+                entities = [
+                    e for e in entities
+                    if _span_entity_type(e) != EntityType.EVENT_TRIGGER
+                ]
+                detail = f"{len(entities)} mentions"
+                if triggers:
+                    detail += f" (+{triggers} event triggers excluded)"
+                ctx.record("ner", True, detail,
                            (time.perf_counter() - s) * 1000)
             except Exception as exc:  # noqa: BLE001 - provenance, not silence
                 ctx.record("ner", False, repr(exc))
@@ -159,6 +193,38 @@ class AnalysisPipeline:
                 events = self.event_model.predict(text, entities=entities)
                 ctx.record("events", True, f"{len(events)} events",
                            (time.perf_counter() - s) * 1000)
+                # 5b. Event attributes (dates, direction, values) scoped to the
+                # event's own sentence. Without this merge, events carry only a
+                # trigger tag and the MPC "what changed" surfaces (e.g. "+50
+                # basis points") would be empty. Relative dates stay unresolved
+                # when no publish date exists -- never guessed.
+                if events:
+                    s2 = time.perf_counter()
+                    merged = 0
+                    for ev in events:
+                        try:
+                            span = None
+                            if ev.evidence:
+                                span = (ev.evidence[0].start, ev.evidence[0].end)
+                            extracted = extract_attributes(
+                                text, span=span, publish_date=None, entities=ev.entities
+                            )
+                            attrs = dict(ev.attributes)
+                            attrs["direction"] = extracted.direction
+                            attrs["values"] = extracted.values
+                            if extracted.event_date is not None:
+                                attrs["event_date"] = extracted.event_date
+                                attrs["date_basis"] = extracted.date_basis
+                                if ev.event_date is None:
+                                    ev.event_date = extracted.event_date
+                            ev.attributes = attrs
+                            merged += 1
+                        except Exception as exc:  # noqa: BLE001
+                            ctx.record("event_attributes", False, repr(exc))
+                    if merged:
+                        ctx.record("event_attributes", True,
+                                   f"{merged}/{len(events)} events enriched",
+                                   (time.perf_counter() - s2) * 1000)
             except Exception as exc:  # noqa: BLE001
                 ctx.record("events", False, repr(exc))
 

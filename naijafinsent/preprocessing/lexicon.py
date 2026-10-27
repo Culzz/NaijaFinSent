@@ -126,6 +126,15 @@ def _entry_from_raw(raw: dict[str, object]) -> LexiconEntry:
     aliases_raw = raw.get("aliases", [])
     aliases = tuple(str(a) for a in aliases_raw) if isinstance(aliases_raw, list) else ()
     ticker = raw.get("ticker")
+    # The committed lexicon stores its own surface term; treat it as an alias
+    # when it differs from the canonical name.
+    term = raw.get("term")
+    if term:
+        t = str(term)
+        if t.upper() != t and t != str(raw.get("canonical", "")):
+            aliases = (t, *aliases)
+        if t.upper() == t and not ticker:
+            ticker = t
     return LexiconEntry(
         canonical=str(raw["canonical"]),
         entity_type=etype,
@@ -187,7 +196,8 @@ class Lexicon:
                 data = json.loads(path.read_text(encoding="utf-8"))
                 raw = data
                 if isinstance(data, dict):
-                    raw = data.get("entities") or data.get("entries") or []
+                    # The committed lexicon uses "terms"; tolerate other shapes.
+                    raw = data.get("entities") or data.get("entries") or data.get("terms") or []
                 if isinstance(raw, list) and raw:
                     entries = [_entry_from_raw(r) for r in raw if isinstance(r, dict)]
                     if entries:
