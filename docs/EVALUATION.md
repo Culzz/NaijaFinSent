@@ -147,6 +147,32 @@ Reading the table honestly:
   unsupported even when correct. Widening gold entity coverage is a review-
   protocol task, not a code task.
 
+## Trained-model comparison (TF-IDF vs lexicon, honestly framed)
+
+`scripts/compare_trained.py` trains the project's TF-IDF family on the gold
+**train** split only and evaluates it — plus the shipped lexicon pipeline — on
+dev+test_random (n=302), with bootstrap CIs. No model selection, one fixed
+configuration per family. Committed report:
+`research/reports/trained_comparison.json`.
+
+| model | n | accuracy [CI95] | macro-F1 | kappa |
+|---|---|---|---|---|
+| lexicon-pipeline | 302 | 0.4338 [0.3775–0.4901] | 0.3561 | 0.2595 |
+| tfidf-logreg | 302 | 0.9536 [0.9272–0.9768] | 0.9508 | 0.9376 |
+| tfidf-svm | 302 | 0.9470 [0.9205–0.9702] | 0.9446 | 0.9286 |
+
+**Read this as an in-distribution upper bound.** 895/1004 gold items are
+template-generated, and train/eval share those frames — the TF-IDF number
+partly memorises frame→label. The honest cut is the **curated-only eval
+surface** (26 hand-style eval items): tfidf-logreg 0.6923 [0.5000–0.8846] vs
+lexicon 0.3846 [0.1923–0.5769]. The trained family really does learn Nigerian
+financial phrasing the lexicon misses, but the real-world advantage is around
++0.31, not +0.52, until human-confirmed non-templated labels replace the
+assisted ones.
+
+Kappa in this table is again assisted-labels-vs-system agreement, not
+inter-annotator agreement.
+
 ## Experiment map (E1-E9)
 
 | # | Question |

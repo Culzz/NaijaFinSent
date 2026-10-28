@@ -1,0 +1,88 @@
+{
+  "seed": 1729,
+  "fairness": {
+    "train_items": 702,
+    "eval_items": 302,
+    "eval_surfaces": "dev + test_random (train excluded; test views untouched)",
+    "model_selection": "none - one fixed configuration per family"
+  },
+  "caveats": [
+    "IN-DISTRIBUTION COMPARISON: 895/1004 gold items come from deterministic template frames, and train/eval share those frames. The TF-IDF numbers are therefore an UPPER BOUND (frame memorisation inflates them), not a field estimate. They show the trained family can learn Nigerian financial phrasing that the lexicon missed, and the gap-vs-lexicon is real \u2014 but only fresh, human-confirmed, non-templated labels can bound real-world accuracy. The curated-only rows on the full eval surfaces are the honest signpost, at small n.",
+    "Kappa here is agreement between assisted labels and each system, not inter-annotator agreement."
+  ],
+  "rows": [
+    {
+      "model": "lexicon-pipeline",
+      "n": 302,
+      "accuracy": 0.4338,
+      "accuracy_ci95": [
+        0.3775,
+        0.4901
+      ],
+      "macro_f1": 0.3561,
+      "kappa_vs_assisted_labels": 0.2595
+    },
+    {
+      "model": "tfidf-logreg",
+      "n": 302,
+      "accuracy": 0.9536,
+      "accuracy_ci95": [
+        0.9272,
+        0.9768
+      ],
+      "macro_f1": 0.9508,
+      "kappa_vs_assisted_labels": 0.9376
+    },
+    {
+      "model": "tfidf-svm",
+      "n": 302,
+      "accuracy": 0.947,
+      "accuracy_ci95": [
+        0.9205,
+        0.9702
+      ],
+      "macro_f1": 0.9446,
+      "kappa_vs_assisted_labels": 0.9286
+    },
+    {
+      "model": "delta_accuracy_best_trained_vs_lexicon",
+      "delta_accuracy": 0.5198,
+      "interpretation": "positive = the trained model beats the lexicon on held-out assisted labels; a small positive delta does not close the credibility gap (labels are model-assisted, review pending)"
+    }
+  ],
+  "curated_only_rows": [
+    {
+      "model": "lexicon (curated-only)",
+      "n": 26,
+      "accuracy": 0.3846,
+      "accuracy_ci95": [
+        0.1923,
+        0.5769
+      ],
+      "macro_f1": 0.2078,
+      "kappa_vs_assisted_labels": 0.0756
+    },
+    {
+      "model": "tfidf-logreg (curated-only)",
+      "n": 26,
+      "accuracy": 0.6923,
+      "accuracy_ci95": [
+        0.5,
+        0.8846
+      ],
+      "macro_f1": 0.6883,
+      "kappa_vs_assisted_labels": 0.5711
+    },
+    {
+      "model": "tfidf-svm (curated-only)",
+      "n": 26,
+      "accuracy": 0.6154,
+      "accuracy_ci95": [
+        0.4231,
+        0.8077
+      ],
+      "macro_f1": 0.6234,
+      "kappa_vs_assisted_labels": 0.4747
+    }
+  ]
+}
