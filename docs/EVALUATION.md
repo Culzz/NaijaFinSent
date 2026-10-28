@@ -105,7 +105,49 @@ explicit `--write-baseline` commit. If the committed gold set size differs
 from the baseline's `n`, the gate warns (and the baseline must be refreshed as
 a reviewed commit).
 
-## Experiment map (E1–E9)
+## Rule-based extractor measurement (per type, with CIs)
+
+`scripts/measure_extractors.py` measures the rule-based NER and event
+extractors against the gold set (— the roadmap requirement "measure the
+rule-based NER/event extractors per-type P/R with CIs; event recall
+prioritised"). Committed report: `research/reports/extractor_metrics.json`.
+Nothing in it feeds back into the lexicon — measurement only.
+
+Event extraction (item-level matching; recall is the priority metric because
+an event the pipeline misses can never be tracked):
+
+| event type | n_gold | recall [CI95] | precision [CI95] |
+|---|---|---|---|
+| earnings | 198 | 0.74 [0.68–0.80] | 0.95 [0.92–0.99] |
+| dividend | 162 | 0.58 [0.51–0.66] | 0.96 [0.92–0.99] |
+| cbn_policy | 70 | **0.17** [0.09–0.27] | 0.92 [0.77–1.00] |
+| regulatory_sanction | 94 | 0.79 [0.69–0.87] | **0.48** [0.40–0.55] |
+| mna | 58 | 0.36 [0.24–0.50] | 0.95 [0.82–1.00] |
+| capital_raise | 41 | 0.78 [0.66–0.90] | 0.74 [0.60–0.88] |
+| fx_move | 69 | 0.86 [0.77–0.93] | 0.97 [0.92–1.00] |
+| oil_energy | 0 | — | 0.00 (24 predicted, all unsupported) |
+
+Reading the table honestly:
+
+- **cbn_policy recall is the product-blocking gap** (0.17): the keyword model
+  fires only when explicit CBN-policy vocabulary appears; templated MPC
+  sentences without "CBN/MPC " keywords are missed. The regulator tracker
+  must not trust the stub extractor until this is fixed or stated in the UI.
+- **regulatory_sanction precision is 0.48** — half of what the pipeline calls
+  a sanction event is not one in gold (the "sanction/freeze" vocabulary fires
+  on unrelated policy sentences).
+- `oil_energy` fires 24 times with zero gold support — a pure false-positive
+  class on this gold set; every surfaced "oil_energy event" is suspect until
+  the trigger list is tightened.
+- NER (surface-form match within the same item; gold records entity *text*,
+  not offsets, and ORG/TICKER are measured as one organisation class):
+  ORG/TICKER recall 0.88 [0.76–0.97], REGULATOR recall 0.86 [0.57–1.00] — but
+  overall entity-level precision is **not meaningful** yet because only ~33
+  gold items carry entity annotations: almost every predicted span counts as
+  unsupported even when correct. Widening gold entity coverage is a review-
+  protocol task, not a code task.
+
+## Experiment map (E1-E9)
 
 | # | Question |
 |---|---|

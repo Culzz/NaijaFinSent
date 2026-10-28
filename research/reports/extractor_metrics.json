@@ -1,0 +1,148 @@
+{
+  "n_items": 1004,
+  "seed": 1729,
+  "bootstrap_rounds": 1000,
+  "events": {
+    "cbn_policy": {
+      "n_gold": 70,
+      "n_predicted": 13,
+      "recall": 0.1714,
+      "precision": 0.9231,
+      "recall_ci95": [
+        0.0857,
+        0.2714
+      ],
+      "precision_ci95": [
+        0.7692,
+        1.0
+      ]
+    },
+    "earnings": {
+      "n_gold": 198,
+      "n_predicted": 154,
+      "recall": 0.7424,
+      "precision": 0.9545,
+      "recall_ci95": [
+        0.6818,
+        0.803
+      ],
+      "precision_ci95": [
+        0.9156,
+        0.987
+      ]
+    },
+    "dividend": {
+      "n_gold": 162,
+      "n_predicted": 98,
+      "recall": 0.5802,
+      "precision": 0.9592,
+      "recall_ci95": [
+        0.5062,
+        0.6605
+      ],
+      "precision_ci95": [
+        0.9184,
+        0.9898
+      ]
+    },
+    "mna": {
+      "n_gold": 58,
+      "n_predicted": 22,
+      "recall": 0.3621,
+      "precision": 0.9545,
+      "recall_ci95": [
+        0.2414,
+        0.5
+      ],
+      "precision_ci95": [
+        0.8182,
+        1.0
+      ]
+    },
+    "regulatory_sanction": {
+      "n_gold": 94,
+      "n_predicted": 154,
+      "recall": 0.7872,
+      "precision": 0.4805,
+      "recall_ci95": [
+        0.6915,
+        0.8723
+      ],
+      "precision_ci95": [
+        0.4026,
+        0.5519
+      ]
+    },
+    "capital_raise": {
+      "n_gold": 41,
+      "n_predicted": 43,
+      "recall": 0.7805,
+      "precision": 0.7442,
+      "recall_ci95": [
+        0.6585,
+        0.9024
+      ],
+      "precision_ci95": [
+        0.6047,
+        0.8837
+      ]
+    },
+    "fx_move": {
+      "n_gold": 69,
+      "n_predicted": 61,
+      "recall": 0.8551,
+      "precision": 0.9672,
+      "recall_ci95": [
+        0.7681,
+        0.9275
+      ],
+      "precision_ci95": [
+        0.918,
+        1.0
+      ]
+    },
+    "oil_energy": {
+      "n_gold": 0,
+      "n_predicted": 24,
+      "recall": null,
+      "precision": 0.0,
+      "recall_ci95": null,
+      "precision_ci95": [
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "ner": {
+    "ORG/TICKER": {
+      "n_gold": 33,
+      "n_predicted": 927,
+      "recall": 0.8788,
+      "precision": 0.0313,
+      "recall_ci95": [
+        0.7576,
+        0.9697
+      ],
+      "precision_ci95": [
+        0.0205,
+        0.0431
+      ],
+      "note": "surface-form match within the same item; the gold set records entity text, not offsets; ORG/TICKER measured as one organisation class"
+    },
+    "REGULATOR": {
+      "n_gold": 7,
+      "n_predicted": 188,
+      "recall": 0.8571,
+      "precision": 0.0319,
+      "recall_ci95": [
+        0.5714,
+        1.0
+      ],
+      "precision_ci95": [
+        0.0106,
+        0.0638
+      ],
+      "note": "surface-form match within the same item; the gold set records entity text, not offsets; ORG/TICKER measured as one organisation class"
+    }
+  }
+}
