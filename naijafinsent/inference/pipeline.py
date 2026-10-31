@@ -16,6 +16,7 @@ from typing import Protocol
 
 from naijafinsent.config import Settings, get_settings
 from naijafinsent.event_extraction.attributes import extract_attributes
+from naijafinsent.event_extraction.corporate_actions import extract_dividend_schedule
 from naijafinsent.schemas import (
     AnalysisResult,
     EntityType,
@@ -219,6 +220,25 @@ class AnalysisPipeline:
                                     ev.event_date = extracted.event_date
                             ev.attributes = attrs
                             merged += 1
+                            # 5c. Dividend schedule (qualification/payment
+                            # dates, per-share amount). Only stated dates are
+                            # merged; relative ones without a publish date
+                            # come back None and stay None -- never guessed.
+                            if ev.event_type.value == "dividend":
+                                schedule = extract_dividend_schedule(
+                                    text, span=span, publish_date=None
+                                )
+                                sattrs = dict(ev.attributes)
+                                for key in (
+                                    "qualification_date",
+                                    "qualification_basis",
+                                    "payment_date",
+                                    "payment_basis",
+                                    "dividend_amount",
+                                ):
+                                    if schedule.get(key) is not None:
+                                        sattrs[key] = schedule[key]
+                                ev.attributes = sattrs
                         except Exception as exc:  # noqa: BLE001
                             ctx.record("event_attributes", False, repr(exc))
                     if merged:

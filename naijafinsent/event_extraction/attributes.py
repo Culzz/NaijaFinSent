@@ -31,6 +31,8 @@ _DATE_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"\b(?P<year>\d{4})-(?P<month_num>\d{2})-(?P<day>\d{2})\b"),
     # 19/02/2026 (day-first, the Nigerian convention)
     re.compile(r"\b(?P<day>\d{1,2})/(?P<month_num>\d{1,2})/(?P<year>\d{4})\b"),
+    # 19-02-2026 (day-first with dashes, also seen in Nigerian releases)
+    re.compile(r"\b(?P<day>\d{1,2})-(?P<month_num>\d{1,2})-(?P<year>\d{4})\b"),
 )
 
 _MONTH_NAME_TO_NUM = {

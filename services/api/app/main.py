@@ -12,7 +12,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import inference
-from app.api import articles, entities, events, health, models, news, notifications, watchlists
+from app.api import articles, calendar, entities, events, health, models, news, notifications, watchlists
 from app.db.base import engine
 from app.db import models as db_models
 
@@ -56,6 +56,7 @@ app.include_router(news.router, prefix="/api/v1/news", tags=["news"])
 app.include_router(articles.router, prefix="/api/v1/articles", tags=["articles"])
 app.include_router(entities.router, prefix="/api/v1/entities", tags=["entities"])
 app.include_router(events.router, prefix="/api/v1/events", tags=["events"])
+app.include_router(calendar.router, prefix="/api/v1/calendar", tags=["calendar"])
 app.include_router(inference.router, prefix="/api/v1/inference", tags=["inference"])
 app.include_router(models.router, prefix="/api/v1/models", tags=["models"])
 app.include_router(watchlists.router, prefix="/api/v1/watchlists", tags=["watchlists"])

@@ -73,6 +73,7 @@ EVENT_FIELDS: tuple[str, ...] = (
     "title",
     "summary",
     "attributes",
+    "entities_json",
     "cluster_id",
     "novelty_score",
     "is_primary",
