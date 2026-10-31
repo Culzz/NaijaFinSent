@@ -19,6 +19,9 @@ htmlcov/
 .env.local
 *.pem
 
+# Local runtime state (live server, tunnels, demo seed logs)
+.live/
+
 # Data (never commit raw article text or trained weights)
 data/corpus/
 data/raw/
